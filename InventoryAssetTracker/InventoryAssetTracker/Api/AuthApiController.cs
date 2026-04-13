@@ -151,5 +151,19 @@ namespace InventoryAssetTracker.Api
 				RedirectUrl = "/Account/Index"
 			});
 		}
+
+		[Authorize]
+		[HttpPost("logout")]
+		public async Task<IActionResult> Logout()
+		{
+			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+			return Ok(new AuthResponseDTO
+			{
+				Success = true,
+				Message = "Logged out successfully",
+				RedirectUrl = "/Home/Index"
+			});
+		}
 	}
 }
