@@ -11,6 +11,7 @@ namespace InventoryAssetTracker.Models
 		public string Username { get; set; } = string.Empty;
 		public string? ProfilePhotoPath { get; set; }
 		public List<Asset> Assets { get; set; } = new List<Asset>();
+		public List<Upload> UploadRecords { get; set; } = new List<Upload>();
 		public List<Auditlog> AuditLogs { get; set; } = new List<Auditlog>();
 	}
 
