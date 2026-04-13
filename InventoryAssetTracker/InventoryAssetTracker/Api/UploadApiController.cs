@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InventoryAssetTracker.Api
 {
-    [Route("Upload")]
+    [Route("api/[controller]")]
     [ApiController]
     [Authorize]
     public class UploadApiController : ControllerBase
@@ -24,7 +24,7 @@ namespace InventoryAssetTracker.Api
             this.environment = environment;
         }
 
-        [HttpPost("UploadProfilePhoto")]
+        [HttpPost("profile-photo")]
         public async Task<IActionResult> UploadProfilePhoto(IFormFile file)
         {
             int? userID = GetCurrentUserID();
