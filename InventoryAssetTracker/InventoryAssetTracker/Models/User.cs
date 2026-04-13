@@ -9,9 +9,9 @@ namespace InventoryAssetTracker.Models
 		public string PasswordHash { get; set; } = string.Empty;
 		public string Role { get; set; } = "User";
 		public string Username { get; set; } = string.Empty;
-
-		public List<Asset> Assets { get; set; } = new();
-		public List<Auditlog> AuditLogs { get; set; } = new();
+		public string? ProfilePhotoPath { get; set; }
+		public List<Asset> Assets { get; set; } = new List<Asset>();
+		public List<Auditlog> AuditLogs { get; set; } = new List<Auditlog>();
 	}
 
 }

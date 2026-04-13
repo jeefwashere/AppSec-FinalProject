@@ -1,6 +1,8 @@
 ﻿using InventoryAssetTracker.Data;
 using InventoryAssetTracker.DTOs;
 using InventoryAssetTracker.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +25,12 @@ namespace InventoryAssetTracker.Api
 		public async Task<IActionResult> Search([FromQuery] string? term)
 		{
 			int? userID = GetCurrentUserID();
+
+			if (userID == null)
+			{
+				await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+				return Unauthorized(new { message = "Invalid session." });
+			}
 
 			IQueryable<Asset> query = userContext.Assets.Where(asset => asset.OwnerId == userID.Value);
 
