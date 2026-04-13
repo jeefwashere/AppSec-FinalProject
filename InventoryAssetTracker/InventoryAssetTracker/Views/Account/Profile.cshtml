@@ -67,10 +67,6 @@
         font-weight: 600;
     }
 
-    .upload-input {
-        margin-bottom: 12px;
-    }
-
     .button-row {
         margin-top: 15px;
         display: flex;
@@ -121,19 +117,16 @@
             <p><strong>Email:</strong> @Model.Email</p>
             <p><strong>Role:</strong> @Model.Role</p>
 
-            <form asp-controller="Upload" asp-action="UploadProfilePhoto" method="post" enctype="multipart/form-data" class="upload-group">
-                @Html.AntiForgeryToken()
-
+            <div class="upload-group">
                 <label class="upload-label">Upload Profile Photo</label>
-                <input type="file" name="file" class="upload-input" />
 
                 <div class="button-row">
-                    <button type="submit" class="profile-button">Upload Photo</button>
+                    <a asp-controller="Upload" asp-action="Index" class="profile-button">Upload Photo</a>
                     <a asp-controller="Item" asp-action="Index" class="profile-button">My Assets</a>
                 </div>
 
                 <p class="help-text">Allowed: JPG, JPEG, PNG, WEBP. Maximum size: 2 MB.</p>
-            </form>
+            </div>
         </div>
     </div>
 </div>

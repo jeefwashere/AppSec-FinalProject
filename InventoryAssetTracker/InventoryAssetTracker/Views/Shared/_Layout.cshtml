@@ -47,6 +47,12 @@
             margin-top: 40px;
             color: #777;
         }
+
+        .role-debug {
+            color: #fff;
+            font-size: 12px;
+            margin-left: 10px;
+        }
     </style>
 </head>
 
@@ -68,17 +74,24 @@
             {
                 <a asp-controller="Account" asp-action="Profile" class="nav-link">Profile</a>
 
+                <!-- Admin link only for Admin users -->
                 @if (User.IsInRole("Admin"))
                 {
                     <a asp-controller="Admin" asp-action="Index" class="nav-link">Admin</a>
                 }
 
+                <!-- Logout -->
                 <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
                     @Html.AntiForgeryToken()
-                    <button type="submit" class="nav-link" style="background:none;border:none;">
+                    <button type="submit" class="nav-link" style="background:none;border:none;cursor:pointer;">
                         Logout
                     </button>
                 </form>
+
+                <!-- Debug: shows current role (remove later) -->
+                <span class="role-debug">
+                    Role: @User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value
+                </span>
             }
             else
             {

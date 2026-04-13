@@ -1,16 +1,33 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryAssetTracker.Controllers
 {
-    // admin panel pages
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
-      
-            public IActionResult Index()
-            {
-                return View();
-            }
-        
+        [HttpGet]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Users()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Assets()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Logs()
+        {
+            return View();
+        }
     }
 }

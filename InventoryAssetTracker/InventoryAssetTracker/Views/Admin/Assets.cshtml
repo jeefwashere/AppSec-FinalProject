@@ -1,7 +1,5 @@
-﻿@model List<InventoryAssetTracker.DTOs.AdminAssetResponseDTO>
-
-@{
-    ViewData["Title"] = "All Assets";
+﻿@{
+    ViewData["Title"] = "Admin - Assets";
 }
 
 <style>
@@ -50,16 +48,10 @@
         .admin-table th {
             background-color: #f5f6f8;
         }
-
-    .empty-message {
-        margin-top: 20px;
-        color: #666;
-    }
 </style>
 
 <div class="admin-page">
 
-    <!-- HEADER -->
     <div class="admin-header">
         <h2 class="admin-title">All Assets</h2>
 
@@ -68,37 +60,46 @@
         </a>
     </div>
 
-    <!-- TABLE -->
-    @if (Model != null && Model.Any())
-    {
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th width="200">Asset Name</th>
-                    <th width="300">Description</th>
-                    <th width="100">Quantity</th>
-                    <th width="200">Owner</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @foreach (var asset in Model)
-                {
-                    <tr>
-                        <td>@asset.AssetName</td>
-                        <td>@asset.Description</td>
-                        <td>@asset.Quantity</td>
-                        <td>@asset.OwnerUsername</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <p class="empty-message">
-            No assets found.
-        </p>
-    }
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th width="120">Asset ID</th>
+                <th width="200">Asset Name</th>
+                <th width="300">Description</th>
+                <th width="120">Quantity</th>
+                <th width="200">Owner</th>
+            </tr>
+        </thead>
+        <tbody id="assetsTableBody"></tbody>
+    </table>
 
 </div>
+
+<script>
+    const dummyAssets = [
+        { assetId: 1, assetName: "Laptop", description: "Dell XPS 13", quantity: 2, owner: "admin01" },
+        { assetId: 2, assetName: "Monitor", description: "27 inch LG", quantity: 1, owner: "josh123" },
+        { assetId: 3, assetName: "Keyboard", description: "Mechanical keyboard", quantity: 3, owner: "mary88" }
+    ];
+
+    function loadAssets() {
+        const body = document.getElementById("assetsTableBody");
+        body.innerHTML = "";
+
+        dummyAssets.forEach(asset => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${asset.assetId}</td>
+                <td>${asset.assetName}</td>
+                <td>${asset.description}</td>
+                <td>${asset.quantity}</td>
+                <td>${asset.owner}</td>
+            `;
+
+            body.appendChild(row);
+        });
+    }
+
+    window.onload = loadAssets;
+</script>
