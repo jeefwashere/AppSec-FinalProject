@@ -1,8 +1,6 @@
-﻿@using Microsoft.AspNetCore.Mvc.ModelBinding
-@model InventoryAssetTracker.ViewModels.UpdateAssetViewModel
-
-@{
+﻿@{
     ViewData["Title"] = "Update Asset";
+    var assetId = ViewBag.AssetId;
 }
 
 <style>
@@ -83,45 +81,133 @@
         margin-top: 12px;
         font-weight: bold;
     }
+
+    .update-success {
+        color: green;
+        text-align: center;
+        margin-top: 12px;
+        font-weight: bold;
+    }
 </style>
 
 <div class="update-card">
     <h2 class="update-title">Update Asset</h2>
 
-    <form asp-action="Update" asp-controller="Item" method="post">
-        @Html.AntiForgeryToken()
-        <input type="hidden" asp-for="ItemID" />
+    <div class="update-container">
+        <input type="hidden" id="assetId" value="@assetId" />
 
-        <div class="update-container">
-            <div class="update-row">
-                <label asp-for="ItemName" class="update-label">Asset Name</label>
-                <input asp-for="ItemName" class="update-input" />
-            </div>
-
-            <div class="update-row">
-                <label asp-for="Description" class="update-label">Description</label>
-                <input asp-for="Description" class="update-input" />
-            </div>
-
-            <div class="update-row">
-                <label asp-for="Quantity" class="update-label">Quantity</label>
-                <input asp-for="Quantity" type="number" class="update-input" />
-            </div>
-
-            <div class="update-actions">
-                <button type="submit" class="update-button">Update Asset</button>
-                <a asp-action="Index" asp-controller="Item" class="back-button">Back</a>
-            </div>
+        <div class="update-row">
+            <label class="update-label" for="itemName">Asset Name</label>
+            <input id="itemName" class="update-input" />
         </div>
 
-        @if (!ViewData.ModelState.IsValid)
-        {
-            <div class="update-error">
-                @foreach (ModelError error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    <p>@error.ErrorMessage</p>
-                }
-            </div>
-        }
-    </form>
+        <div class="update-row">
+            <label class="update-label" for="description">Description</label>
+            <input id="description" class="update-input" />
+        </div>
+
+        <div class="update-row">
+            <label class="update-label" for="quantity">Quantity</label>
+            <input id="quantity" type="number" class="update-input" />
+        </div>
+
+        <div class="update-actions">
+            <button type="button" class="update-button" onclick="updateAsset()">Update Asset</button>
+            <a asp-action="Index" asp-controller="Item" class="back-button">Back</a>
+        </div>
+
+        <div id="messageBox"></div>
+    </div>
 </div>
+
+<script>
+    async function loadAsset() {
+        const assetId = document.getElementById("assetId").value;
+
+        const response = await fetch("/api/itemapi/" + assetId, {
+            method: "GET",
+            credentials: "same-origin"
+        });
+
+        if (!response.ok) {
+            if (response.status === 401 || response.status === 403) {
+                window.location.href = "/Account/Login";
+                return;
+            }
+
+            window.location.href = "/Item/Index";
+            return;
+        }
+
+        const asset = await response.json();
+
+        document.getElementById("itemName").value = asset.assetName ?? "";
+        document.getElementById("description").value = asset.description ?? "";
+        document.getElementById("quantity").value = asset.quantity ?? 0;
+    }
+
+    async function updateAsset() {
+        const assetId = parseInt(document.getElementById("assetId").value);
+        const itemName = document.getElementById("itemName").value.trim();
+        const description = document.getElementById("description").value.trim();
+        const quantityValue = document.getElementById("quantity").value;
+        const quantity = parseInt(quantityValue);
+        const messageBox = document.getElementById("messageBox");
+
+        messageBox.innerHTML = "";
+
+        if (!itemName) {
+            messageBox.innerHTML = '<p class="update-error">Asset name is required.</p>';
+            return;
+        }
+
+        if (isNaN(quantity) || quantity < 0) {
+            messageBox.innerHTML = '<p class="update-error">Quantity must be 0 or greater.</p>';
+            return;
+        }
+
+        const requestBody = {
+            itemID: assetId,
+            itemName: itemName,
+            description: description,
+            quantity: quantity
+        };
+
+        const response = await fetch("/api/itemapi/" + assetId, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin",
+            body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+            if (response.status === 401 || response.status === 403) {
+                window.location.href = "/Account/Login";
+                return;
+            }
+
+            let errorText = "Failed to update asset.";
+
+            try {
+                const errorData = await response.json();
+                if (errorData.message) {
+                    errorText = errorData.message;
+                }
+            } catch {
+            }
+
+            messageBox.innerHTML = `<p class="update-error">${errorText}</p>`;
+            return;
+        }
+
+        messageBox.innerHTML = '<p class="update-success">Asset updated successfully.</p>';
+
+        setTimeout(() => {
+            window.location.href = "/Item/Index";
+        }, 700);
+    }
+
+    window.onload = loadAsset;
+</script>

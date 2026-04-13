@@ -1,7 +1,6 @@
-﻿@model InventoryAssetTracker.DTOs.AssetResponseDTO
-
-@{
+﻿@{
     ViewData["Title"] = "Asset Details";
+    var assetId = ViewBag.AssetId;
 }
 
 <style>
@@ -61,28 +60,70 @@
             background-color: #357bd8;
             color: white;
         }
+
+    .details-error {
+        color: red;
+        text-align: center;
+        margin-top: 12px;
+        font-weight: bold;
+    }
 </style>
 
 <div class="details-card">
     <h2 class="details-title">Asset Details</h2>
 
+    <input type="hidden" id="assetId" value="@assetId" />
+
     <div class="details-row">
         <span class="details-label">Asset Name</span>
-        <span class="details-value">@Model.AssetName</span>
+        <span class="details-value" id="assetName">Loading...</span>
     </div>
 
     <div class="details-row">
         <span class="details-label">Description</span>
-        <span class="details-value">@Model.Description</span>
+        <span class="details-value" id="description">Loading...</span>
     </div>
 
     <div class="details-row">
         <span class="details-label">Quantity</span>
-        <span class="details-value">@Model.Quantity</span>
+        <span class="details-value" id="quantity">Loading...</span>
     </div>
 
+    <div id="messageBox"></div>
+
     <div class="details-actions">
-        <a asp-controller="Item" asp-action="Update" asp-route-id="@Model.AssetId" class="details-button">Update</a>
+        <a id="updateButton" href="#" class="details-button">Update</a>
         <a asp-controller="Item" asp-action="Index" class="details-button">Back</a>
     </div>
 </div>
+
+<script>
+    async function loadAssetDetails() {
+        const assetId = document.getElementById("assetId").value;
+        const messageBox = document.getElementById("messageBox");
+
+        const response = await fetch("/api/itemapi/" + assetId, {
+            method: "GET",
+            credentials: "same-origin"
+        });
+
+        if (!response.ok) {
+            if (response.status === 401 || response.status === 403) {
+                window.location.href = "/Account/Login";
+                return;
+            }
+
+            messageBox.innerHTML = '<p class="details-error">Failed to load asset details.</p>';
+            return;
+        }
+
+        const asset = await response.json();
+
+        document.getElementById("assetName").textContent = asset.assetName ?? "";
+        document.getElementById("description").textContent = asset.description ?? "";
+        document.getElementById("quantity").textContent = asset.quantity ?? 0;
+        document.getElementById("updateButton").href = "/Item/Update?id=" + asset.assetId;
+    }
+
+    window.onload = loadAssetDetails;
+</script>
