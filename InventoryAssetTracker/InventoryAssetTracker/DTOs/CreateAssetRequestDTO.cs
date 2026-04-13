@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+// this is for create asset request, it has asset name, description and quantity, the asset name is required, the quantity should be non-negative
 namespace InventoryAssetTracker.DTOs
 {
     public class CreateAssetRequestDTO

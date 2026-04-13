@@ -20,7 +20,11 @@ namespace InventoryAssetTracker.Api
 		{
 			this.userContext = userContext;
 		}
-
+		/// <summary>
+		/// serach for item
+		/// </summary>
+		/// <param name="term"></param>
+		/// <returns></returns>
 		[HttpGet("search")]
 		public async Task<IActionResult> Search([FromQuery] string? term)
 		{
