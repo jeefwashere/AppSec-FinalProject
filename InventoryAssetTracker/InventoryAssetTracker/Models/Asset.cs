@@ -1,4 +1,4 @@
-﻿using InventoryAssetTracker.Models.YourProjectName.Models;
+﻿using InventoryAssetTracker.Models;
 
 namespace InventoryAssetTracker.Models
 {
