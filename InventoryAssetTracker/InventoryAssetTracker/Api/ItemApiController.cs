@@ -183,9 +183,35 @@ namespace InventoryAssetTracker.Api
 		}
 
 		[HttpDelete("{id}")]
-		public IActionResult Delete(int id)
+		public async IActionResult Delete(int id)
 		{
-			return Ok();
+			int? userID = GetCurrentUserID();
+
+			if (userID == null)
+			{
+				await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+				return Unauthorized(new { message = "Invalid session." });
+			}
+
+			Asset? userAsset = await userContext.Assets.FindAsync(id);
+
+			if (userAsset == null)
+			{
+				return NotFound(new { message = "Item not found." });
+			}
+
+			if (userAsset.OwnerId != userID.Value)
+			{
+				return Forbid();
+			}
+
+			userContext.Assets.Remove(userAsset);
+			await userContext.SaveChangesAsync();
+
+			return Ok( new
+			{
+				message = "Item deleted successfully."
+			});
 		}
 
 		private int? GetCurrentUserID()
