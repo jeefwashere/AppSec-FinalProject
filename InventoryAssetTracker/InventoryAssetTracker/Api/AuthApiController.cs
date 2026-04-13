@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication;
+using System.Text.RegularExpressions;
+using InventoryAssetTracker.Controllers;
 
 namespace InventoryAssetTracker.Api
 {
@@ -64,7 +66,9 @@ namespace InventoryAssetTracker.Api
 			List<Claim> claims = new List<Claim>
 			{
 				new Claim(ClaimTypes.Name, user.Username),
-				new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString())
+				new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+				new Claim(ClaimTypes.Email, user.Email),
+				new Claim(ClaimTypes.Role, user.Role)
 			};
 
 			ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -90,10 +94,62 @@ namespace InventoryAssetTracker.Api
 			});
 		}
 
+		[AllowAnonymous]
 		[HttpPost("register")]
-		public IActionResult Register()
+		public async Task<IActionResult> Register([FromBody] RegisterRequestDTO register)
 		{
-			return Ok();
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(new AuthResponseDTO
+				{
+					Success = false,
+					Message = "Invalid registration request."
+				});
+			}
+
+			bool checkUsernameExists = await userContext.Users.AnyAsync(u => u.Username == register.Username);
+
+			if (checkUsernameExists)
+			{
+				return BadRequest(new AuthResponseDTO
+				{
+					Success = false,
+					Message = "Username already exists."
+				});
+			}
+
+			bool checkEmailExists = await userContext.Users.AnyAsync(u => u.Email == register.Email);
+
+			if (checkEmailExists)
+			{
+				return BadRequest(new AuthResponseDTO
+				{
+					Success = false,
+					Message = "Email already exists."
+				});
+			}
+
+			User user = new User
+			{
+				Username = register.Username,
+				Email = register.Email,
+				Role = "User"
+			};
+
+			PasswordHasher<User> hasher = new PasswordHasher<User>();
+			string hash = hasher.HashPassword(user, register.Password);
+
+			user.PasswordHash = hash;
+
+			await userContext.Users.AddAsync(user);
+			await userContext.SaveChangesAsync();
+
+			return Ok(new AuthResponseDTO
+			{
+				Success = true,
+				Message = "User registered successfully",
+				RedirectUrl = "/Account/Index"
+			});
 		}
 	}
 }
