@@ -1,27 +1,35 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryAssetTracker.Controllers
 {
-	// mvc UI pages item/list/add/update
-	[Authorize]
-	public class ItemController : Controller
-	{
-		public IActionResult Index()
-		{
-			return View();
-		}
+    [Authorize]
+    public class ItemController : Controller
+    {
+        [HttpGet]
+        public IActionResult Index()
+        {
+            return View();
+        }
 
-		public IActionResult Add()
-		{
-			return View();
-		}
+        [HttpGet]
+        public IActionResult Details(int id)
+        {
+            ViewBag.AssetId = id;
+            return View();
+        }
 
-		public IActionResult Update(int id)
-		{
-			ViewBag.ItemId = id;
-			return View();
-		}
-	}
+        [HttpGet]
+        public IActionResult Add()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Update(int id)
+        {
+            ViewBag.AssetId = id;
+            return View();
+        }
+    }
 }

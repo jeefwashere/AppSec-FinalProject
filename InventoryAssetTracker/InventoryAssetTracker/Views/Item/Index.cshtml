@@ -1,6 +1,4 @@
-﻿@model List<InventoryAssetTracker.DTOs.AssetResponseDTO>
-
-@{
+﻿@{
     ViewData["Title"] = "My Assets";
 }
 
@@ -36,7 +34,7 @@
 
     .search-box {
         margin-bottom: 20px;
-        max-width: 450px;
+        max-width: 500px;
     }
 
     .search-input {
@@ -106,89 +104,112 @@
 
 <div class="asset-page">
 
-    <!-- HEADER -->
     <div class="asset-header">
         <h2 class="asset-title">My Assets</h2>
-
-        <a asp-controller="Item" asp-action="Add" class="add-button">
-            Add Asset
-        </a>
+        <a asp-controller="Item" asp-action="Add" class="add-button">Add Asset</a>
     </div>
 
-    <!-- SEARCH -->
-    <form asp-controller="Item" asp-action="Index" method="get" class="search-box">
-        <input type="text" name="term" class="search-input" placeholder="Search assets..." />
-        <button type="submit" class="search-button">Search</button>
-    </form>
+    <div class="search-box">
+        <input type="text" id="searchTerm" class="search-input" placeholder="Search assets..." />
+        <button type="button" class="search-button" onclick="loadAssets()">Search</button>
+    </div>
 
-    <!-- TABLE -->
-    @if (Model != null && Model.Any())
-    {
-        <table class="asset-table">
-            <thead>
-                <tr>
-                    <th width="250">Asset Name</th>
-                    <th width="350">Description</th>
-                    <th width="120">Quantity</th>
-                    <th width="260">Actions</th>
-                </tr>
-            </thead>
+    <table class="asset-table" id="assetTable" style="display:none;">
+        <thead>
+            <tr>
+                <th width="250">Asset Name</th>
+                <th width="350">Description</th>
+                <th width="120">Quantity</th>
+                <th width="260">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="assetTableBody"></tbody>
+    </table>
 
-            <tbody>
-                @foreach (var asset in Model)
-                {
-                    <tr>
-                        <td>@asset.AssetName</td>
-                        <td>@asset.Description</td>
-                        <td>@asset.Quantity</td>
-
-                        <td>
-                            <div class="action-wrap">
-
-                                <!-- DETAILS -->
-                                <a asp-controller="Item"
-                                   asp-action="Details"
-                                   asp-route-id="@asset.AssetId"
-                                   class="action-button">
-                                    Details
-                                </a>
-
-                                <!-- UPDATE -->
-                                <a asp-controller="Item"
-                                   asp-action="Update"
-                                   asp-route-id="@asset.AssetId"
-                                   class="action-button">
-                                    Update
-                                </a>
-
-                                <!-- DELETE -->
-                                <form asp-controller="Item"
-                                      asp-action="Delete"
-                                      method="post"
-                                      style="margin:0;">
-                                    @Html.AntiForgeryToken()
-
-                                    <input type="hidden"
-                                           name="id"
-                                           value="@asset.AssetId" />
-
-                                    <button type="submit"
-                                            class="action-button">
-                                        Delete
-                                    </button>
-                                </form>
-
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <p class="empty-message">
-            No assets found. Add your first asset.
-        </p>
-    }
+    <p class="empty-message" id="emptyMessage" style="display:none;">
+        No assets found. Add your first asset.
+    </p>
 </div>
+
+<script>
+    async function loadAssets() {
+        const term = document.getElementById("searchTerm").value.trim();
+        let url = "/api/itemapi";
+
+        if (term.length > 0) {
+            url = "/api/searchapi/search?term=" + encodeURIComponent(term);
+        }
+
+        const response = await fetch(url, {
+            method: "GET",
+            credentials: "same-origin"
+        });
+
+        if (!response.ok) {
+            if (response.status === 401 || response.status === 403) {
+                window.location.href = "/Account/Login";
+                return;
+            }
+
+            alert("Failed to load assets.");
+            return;
+        }
+
+        const assets = await response.json();
+
+        const table = document.getElementById("assetTable");
+        const body = document.getElementById("assetTableBody");
+        const emptyMessage = document.getElementById("emptyMessage");
+
+        body.innerHTML = "";
+
+        if (!assets || assets.length === 0) {
+            table.style.display = "none";
+            emptyMessage.style.display = "block";
+            return;
+        }
+
+        emptyMessage.style.display = "none";
+        table.style.display = "table";
+
+        assets.forEach(asset => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${asset.assetName ?? ""}</td>
+                <td>${asset.description ?? ""}</td>
+                <td>${asset.quantity ?? 0}</td>
+                <td>
+                    <div class="action-wrap">
+                        <a href="/Item/Details?id=${asset.assetId}" class="action-button">Details</a>
+                        <a href="/Item/Update?id=${asset.assetId}" class="action-button">Update</a>
+                        <button class="action-button" onclick="deleteAsset(${asset.assetId})">Delete</button>
+                    </div>
+                </td>
+            `;
+
+            body.appendChild(row);
+        });
+    }
+
+    async function deleteAsset(assetId) {
+        const confirmed = confirm("Are you sure you want to delete this asset?");
+        if (!confirmed) {
+            return;
+        }
+
+        const response = await fetch("/api/itemapi/" + assetId, {
+            method: "DELETE",
+            credentials: "same-origin"
+        });
+
+        if (!response.ok) {
+            alert("Failed to delete asset.");
+            return;
+        }
+
+        loadAssets();
+    }
+
+    window.onload = loadAssets;
+</script>

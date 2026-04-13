@@ -84,9 +84,9 @@ namespace InventoryAssetTracker.Api
 				new ClaimsPrincipal(claimsIdentity),
 				authProperties);
 
-			string redirectUrl = string.IsNullOrWhiteSpace(login.ReturnUrl) ? "/Asset/Index" : login.ReturnUrl;
+            string redirectUrl = string.IsNullOrWhiteSpace(login.ReturnUrl) ? "/Item/Index" : login.ReturnUrl;
 
-			return Ok(new AuthResponseDTO
+            return Ok(new AuthResponseDTO
 			{
 				Success = true,
 				Message = "Login successful.",
@@ -148,7 +148,7 @@ namespace InventoryAssetTracker.Api
 			{
 				Success = true,
 				Message = "User registered successfully",
-				RedirectUrl = "/Account/Index"
+				RedirectUrl = "/Account/Login"
 			});
 		}
 

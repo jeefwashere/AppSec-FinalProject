@@ -1,20 +1,26 @@
-﻿using System.Net.Http;
-using System.Net.Http.Json;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using InventoryAssetTracker.Data;
 using InventoryAssetTracker.DTOs;
+using InventoryAssetTracker.Models;
 using InventoryAssetTracker.ViewModels;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventoryAssetTracker.Controllers
 {
     public class AccountController : Controller
     {
         private readonly IHttpClientFactory httpClientFactory;
+        private readonly UserContext userContext;
 
-        public AccountController(IHttpClientFactory httpClientFactory)
+        public AccountController(IHttpClientFactory httpClientFactory, UserContext userContext)
         {
             this.httpClientFactory = httpClientFactory;
+            this.userContext = userContext;
         }
 
         [HttpGet]
@@ -39,33 +45,54 @@ namespace InventoryAssetTracker.Controllers
                 return View(model);
             }
 
-            HttpClient client = httpClientFactory.CreateClient();
+            User? user = await userContext.Users.FirstOrDefaultAsync(u => u.Username == model.Username);
 
-            LoginRequestDTO request = new LoginRequestDTO
+            if (user == null)
             {
-                Username = model.Username,
-                Password = model.Password,
-                ReturnUrl = model.ReturnUrl
-            };
-
-            HttpResponseMessage response = await client.PostAsJsonAsync("https://localhost:7126/api/authapi/login", request);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                AuthResponseDTO? failedResponse = await response.Content.ReadFromJsonAsync<AuthResponseDTO>();
-
-                ModelState.AddModelError(string.Empty, failedResponse?.Message ?? "Login failed.");
+                ModelState.AddModelError(string.Empty, "Invalid username or password.");
                 return View(model);
             }
 
-            AuthResponseDTO? successResponse = await response.Content.ReadFromJsonAsync<AuthResponseDTO>();
+            PasswordHasher<User> hasher = new PasswordHasher<User>();
+            PasswordVerificationResult passwordCheck = hasher.VerifyHashedPassword(user, user.PasswordHash, model.Password);
 
-            if (successResponse != null && !string.IsNullOrWhiteSpace(successResponse.RedirectUrl))
+            if (passwordCheck == PasswordVerificationResult.Failed)
             {
-                return Redirect(successResponse.RedirectUrl);
+                ModelState.AddModelError(string.Empty, "Invalid username or password.");
+                return View(model);
             }
 
-            return RedirectToAction("Index", "Home");
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role)
+            };
+
+            ClaimsIdentity claimsIdentity = new ClaimsIdentity(
+                claims,
+                CookieAuthenticationDefaults.AuthenticationScheme);
+
+            ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+            AuthenticationProperties authProperties = new AuthenticationProperties
+            {
+                IsPersistent = false,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
+            };
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                claimsPrincipal,
+                authProperties);
+
+            if (!string.IsNullOrWhiteSpace(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+            {
+                return Redirect(model.ReturnUrl);
+            }
+
+            return RedirectToAction("Index", "Item");
         }
 
         [HttpGet]
@@ -99,16 +126,8 @@ namespace InventoryAssetTracker.Controllers
             if (!response.IsSuccessStatusCode)
             {
                 AuthResponseDTO? failedResponse = await response.Content.ReadFromJsonAsync<AuthResponseDTO>();
-
                 ModelState.AddModelError(string.Empty, failedResponse?.Message ?? "Registration failed.");
                 return View(model);
-            }
-
-            AuthResponseDTO? successResponse = await response.Content.ReadFromJsonAsync<AuthResponseDTO>();
-
-            if (successResponse != null && !string.IsNullOrWhiteSpace(successResponse.RedirectUrl))
-            {
-                return Redirect(successResponse.RedirectUrl);
             }
 
             return RedirectToAction("Login", "Account");
@@ -133,15 +152,7 @@ namespace InventoryAssetTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            HttpClient client = httpClientFactory.CreateClient();
-
-            HttpResponseMessage response = await client.PostAsync("https://localhost:7126/api/authapi/logout", null);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }
 
