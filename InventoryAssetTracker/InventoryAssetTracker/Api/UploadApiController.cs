@@ -18,7 +18,7 @@ namespace InventoryAssetTracker.Api
         private readonly UserContext userContext;
         private readonly IWebHostEnvironment environment;
 
-        public UploadApiController(UserContext userContext,  IWebHostEnvironment environment)
+        public UploadApiController(UserContext userContext, IWebHostEnvironment environment)
         {
             this.userContext = userContext;
             this.environment = environment;
@@ -29,11 +29,11 @@ namespace InventoryAssetTracker.Api
         {
             int? userID = GetCurrentUserID();
 
-			if (userID == null)
-			{
-				await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-				return Unauthorized(new { message = "Invalid session." });
-			}
+            // 🔥 CHANGE: removed forced sign-out (not needed)
+            if (userID == null)
+            {
+                return Unauthorized(new { message = "Invalid session." });
+            }
 
             if (file == null || file.Length == 0)
             {
@@ -75,50 +75,50 @@ namespace InventoryAssetTracker.Api
 
             string uploadsFolder = Path.Combine(environment.WebRootPath, "uploads", "profilephotos");
 
-			if (!Directory.Exists(uploadsFolder))
-			{
-				Directory.CreateDirectory(uploadsFolder);
-			}
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
 
-			string uniqueFileName = $"user_{user.UserId}_{Guid.NewGuid()}{fileExtension}";
-			string fullFilePath = Path.Combine(uploadsFolder, uniqueFileName);
+            string uniqueFileName = $"user_{user.UserId}_{Guid.NewGuid()}{fileExtension}";
+            string fullFilePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-			using (FileStream stream = new FileStream(fullFilePath, FileMode.Create))
-			{
-				await file.CopyToAsync(stream);
-			}
+            using (FileStream stream = new FileStream(fullFilePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
 
-			if (!string.IsNullOrWhiteSpace(user.ProfilePhotoPath))
-			{
-				string oldFileName = Path.GetFileName(user.ProfilePhotoPath);
-				string oldFullPath = Path.Combine(uploadsFolder, oldFileName);
+            if (!string.IsNullOrWhiteSpace(user.ProfilePhotoPath))
+            {
+                string oldFileName = Path.GetFileName(user.ProfilePhotoPath);
+                string oldFullPath = Path.Combine(uploadsFolder, oldFileName);
 
-				if (System.IO.File.Exists(oldFullPath))
-				{
-					System.IO.File.Delete(oldFullPath);
-				}
-			}
+                if (System.IO.File.Exists(oldFullPath))
+                {
+                    System.IO.File.Delete(oldFullPath);
+                }
+            }
 
-			user.ProfilePhotoPath = $"/uploads/profilephotos/{uniqueFileName}";
-			await userContext.SaveChangesAsync();
+            user.ProfilePhotoPath = $"/uploads/profilephotos/{uniqueFileName}";
+            await userContext.SaveChangesAsync();
 
-			return Ok(new
-			{
-				message = "Profile photo uploaded successfully.",
-				photoPath = user.ProfilePhotoPath
-			});
+            return Ok(new
+            {
+                message = "Profile photo uploaded successfully.",
+                photoPath = user.ProfilePhotoPath
+            });
         }
 
-		private int? GetCurrentUserID()
-		{
-			string? userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        private int? GetCurrentUserID()
+        {
+            string? userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-			if (!int.TryParse(userIdClaim, out int userId))
-			{
-				return null;
-			}
+            if (!int.TryParse(userIdClaim, out int userId))
+            {
+                return null;
+            }
 
-			return userId;
-		}
-	}
+            return userId;
+        }
+    }
 }

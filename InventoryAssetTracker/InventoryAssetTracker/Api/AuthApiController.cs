@@ -1,7 +1,6 @@
 ﻿using InventoryAssetTracker.Data;
 using InventoryAssetTracker.DTOs;
 using InventoryAssetTracker.Models;
-using InventoryAssetTracker.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;

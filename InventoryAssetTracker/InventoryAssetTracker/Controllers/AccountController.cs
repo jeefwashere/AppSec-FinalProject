@@ -135,13 +135,28 @@ namespace InventoryAssetTracker.Controllers
 
         [Authorize]
         [HttpGet]
-        public IActionResult Profile()
+        public async Task<IActionResult> Profile()
         {
+            string? userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!int.TryParse(userIdClaim, out int userId))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            User? user = await userContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             ProfileViewModel model = new ProfileViewModel
             {
-                Username = User.FindFirstValue(ClaimTypes.Name) ?? string.Empty,
-                Email = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty,
-                Role = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty
+                Username = user.Username,
+                Email = user.Email,
+                Role = user.Role,
+                ProfilePhotoPath = user.ProfilePhotoPath
             };
 
             return View(model);

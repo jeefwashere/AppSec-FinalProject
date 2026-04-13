@@ -39,16 +39,16 @@
         text-align: center;
     }
 
-    .admin-box h3 {
-        margin-bottom: 10px;
-        color: #333;
-    }
+        .admin-box h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
 
-    .admin-box p {
-        color: #666;
-        margin-bottom: 15px;
-        min-height: 40px;
-    }
+        .admin-box p {
+            color: #666;
+            margin-bottom: 15px;
+            min-height: 40px;
+        }
 
     .admin-button {
         padding: 10px 18px;
@@ -60,34 +60,35 @@
         display: inline-block;
     }
 
-    .admin-button:hover {
-        background-color: #357bd8;
-        color: white;
-    }
+        .admin-button:hover {
+            background-color: #357bd8;
+            color: white;
+        }
 </style>
 
 <div class="admin-card">
     <h2 class="admin-title">Admin Dashboard</h2>
+
     <p class="admin-subtitle">
-        Manage users, monitor assets, and review activity logs.
+        Manage users, review assets, and inspect audit logs.
     </p>
 
     <div class="admin-grid">
         <div class="admin-box">
             <h3>Users</h3>
-            <p>View registered users and review account roles.</p>
+            <p>View registered users and check assigned roles.</p>
             <a asp-controller="Admin" asp-action="Users" class="admin-button">View Users</a>
         </div>
 
         <div class="admin-box">
             <h3>Assets</h3>
-            <p>Review all tracked assets across the system.</p>
+            <p>Review all assets currently tracked in the system.</p>
             <a asp-controller="Admin" asp-action="Assets" class="admin-button">View Assets</a>
         </div>
 
         <div class="admin-box">
             <h3>Logs</h3>
-            <p>Inspect audit and security-related activity.</p>
+            <p>Inspect application activity and security-related actions.</p>
             <a asp-controller="Admin" asp-action="Logs" class="admin-button">View Logs</a>
         </div>
     </div>
