@@ -1,5 +1,8 @@
 ﻿namespace InventoryAssetTracker.Models
 {
+	/// <summary>
+	/// upload model for database, it has upload information and relationship with other tables
+	/// </summary>
     public class Upload
     {
 		public int UploadId { get; set; }
