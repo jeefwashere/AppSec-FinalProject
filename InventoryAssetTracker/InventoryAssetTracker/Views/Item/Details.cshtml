@@ -1,5 +1,88 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model InventoryAssetTracker.DTOs.AssetResponseDTO
+
 @{
+    ViewData["Title"] = "Asset Details";
 }
+
+<style>
+    .details-card {
+        max-width: 550px;
+        margin: 80px auto;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        font-family: Arial, sans-serif;
+    }
+
+    .details-title {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #333;
+    }
+
+    .details-row {
+        margin-bottom: 18px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .details-label {
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 4px;
+        display: block;
+    }
+
+    .details-value {
+        color: #555;
+    }
+
+    .details-actions {
+        margin-top: 22px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .details-button {
+        width: 120px;
+        padding: 8px;
+        border: 1px solid #4a90e2;
+        background: #4a90e2;
+        color: white;
+        cursor: pointer;
+        text-align: center;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .details-button:hover {
+            background-color: #357bd8;
+            color: white;
+        }
+</style>
+
+<div class="details-card">
+    <h2 class="details-title">Asset Details</h2>
+
+    <div class="details-row">
+        <span class="details-label">Asset Name</span>
+        <span class="details-value">@Model.AssetName</span>
+    </div>
+
+    <div class="details-row">
+        <span class="details-label">Description</span>
+        <span class="details-value">@Model.Description</span>
+    </div>
+
+    <div class="details-row">
+        <span class="details-label">Quantity</span>
+        <span class="details-value">@Model.Quantity</span>
+    </div>
+
+    <div class="details-actions">
+        <a asp-controller="Item" asp-action="Update" asp-route-id="@Model.AssetId" class="details-button">Update</a>
+        <a asp-controller="Item" asp-action="Index" class="details-button">Back</a>
+    </div>
+</div>

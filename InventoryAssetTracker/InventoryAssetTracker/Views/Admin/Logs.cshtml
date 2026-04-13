@@ -1,5 +1,116 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model List<InventoryAssetTracker.DTOs.AuditLogResponseDTO>
+
 @{
+    ViewData["Title"] = "Audit Logs";
 }
+
+<style>
+    .admin-page {
+        font-family: Arial, sans-serif;
+    }
+
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .admin-title {
+        margin: 0;
+        color: #333;
+    }
+
+    .back-button {
+        padding: 10px 16px;
+        background: #4a90e2;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+    }
+
+        .back-button:hover {
+            background-color: #357bd8;
+            color: white;
+        }
+
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+    }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .admin-table th {
+            background-color: #f5f6f8;
+        }
+
+    .log-action {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .log-user {
+        color: #1f4f9f;
+        font-weight: 600;
+    }
+
+    .log-time {
+        color: #666;
+        white-space: nowrap;
+    }
+
+    .empty-message {
+        margin-top: 20px;
+        color: #666;
+    }
+</style>
+
+<div class="admin-page">
+
+    <div class="admin-header">
+        <h2 class="admin-title">Audit Logs</h2>
+
+        <a asp-controller="Admin" asp-action="Index" class="back-button">
+            Back
+        </a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th width="180">Action</th>
+                    <th width="300">Details</th>
+                    <th width="180">User</th>
+                    <th width="180">Created At</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var log in Model)
+                {
+                    <tr>
+                        <td class="log-action">@log.Action</td>
+                        <td>@log.Details</td>
+                        <td class="log-user">@(string.IsNullOrWhiteSpace(log.Username) ? "System" : log.Username)</td>
+                        <td class="log-time">@log.CreatedAt</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="empty-message">No audit logs found.</p>
+    }
+
+</div>

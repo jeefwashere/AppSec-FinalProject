@@ -1,5 +1,115 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using Microsoft.AspNetCore.Mvc.ModelBinding
+@model InventoryAssetTracker.ViewModels.UploadViewModel
+
 @{
+    ViewData["Title"] = "Upload Profile Photo";
 }
+
+<style>
+    .upload-card {
+        max-width: 450px;
+        margin: 80px auto;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        font-family: Arial, sans-serif;
+    }
+
+    .upload-title {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #333;
+    }
+
+    .upload-container {
+        width: 320px;
+        margin: 0 auto;
+    }
+
+    .upload-row {
+        margin-bottom: 15px;
+    }
+
+    .upload-label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .upload-input {
+        width: 100%;
+        padding: 8px 0;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+
+    .help-text {
+        color: #666;
+        font-size: 13px;
+        margin-top: 8px;
+    }
+
+    .upload-actions {
+        margin-top: 18px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .upload-button, .back-button {
+        width: 120px;
+        padding: 8px;
+        border: 1px solid #4a90e2;
+        background: #4a90e2;
+        color: white;
+        cursor: pointer;
+        text-align: center;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .upload-button:hover, .back-button:hover {
+            background-color: #357bd8;
+            color: white;
+        }
+
+    .upload-error {
+        color: red;
+        text-align: center;
+        margin-top: 12px;
+        font-weight: bold;
+    }
+</style>
+
+<div class="upload-card">
+    <h2 class="upload-title">Upload Profile Photo</h2>
+
+    <form asp-controller="Upload" asp-action="UploadProfilePhoto" method="post" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+
+        <div class="upload-container">
+            <div class="upload-row">
+                <label asp-for="File" class="upload-label">Choose Image</label>
+                <input asp-for="File" type="file" class="upload-input" />
+                <p class="help-text">Allowed file types: JPG, JPEG, PNG, WEBP. Maximum size: 2 MB.</p>
+            </div>
+
+            <div class="upload-actions">
+                <button type="submit" class="upload-button">Upload</button>
+                <a asp-controller="Account" asp-action="Profile" class="back-button">Back</a>
+            </div>
+        </div>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="upload-error">
+                @foreach (ModelError error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            </div>
+        }
+    </form>
+</div>

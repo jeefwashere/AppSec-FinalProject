@@ -1,5 +1,129 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model List<InventoryAssetTracker.DTOs.UserResponseDTO>
+
 @{
+    ViewData["Title"] = "Users";
 }
+
+<style>
+    .admin-page {
+        font-family: Arial, sans-serif;
+    }
+
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .admin-title {
+        margin: 0;
+        color: #333;
+    }
+
+    .back-button {
+        padding: 10px 16px;
+        background: #4a90e2;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+    }
+
+        .back-button:hover {
+            background-color: #357bd8;
+            color: white;
+        }
+
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+    }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .admin-table th {
+            background-color: #f5f6f8;
+        }
+
+    .role-badge {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: bold;
+        display: inline-block;
+    }
+
+    .role-admin {
+        background-color: #ffe0e0;
+        color: #b02a37;
+    }
+
+    .role-user {
+        background-color: #e0ecff;
+        color: #1f4f9f;
+    }
+
+    .empty-message {
+        margin-top: 20px;
+        color: #666;
+    }
+</style>
+
+<div class="admin-page">
+
+    <!-- HEADER -->
+    <div class="admin-header">
+        <h2 class="admin-title">Users</h2>
+
+        <a asp-controller="Admin" asp-action="Index" class="back-button">
+            Back
+        </a>
+    </div>
+
+    <!-- TABLE -->
+    @if (Model != null && Model.Any())
+    {
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th width="200">Username</th>
+                    <th width="300">Email</th>
+                    <th width="150">Role</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.Username</td>
+                        <td>@user.Email</td>
+                        <td>
+                            @if (user.Role == "Admin")
+                            {
+                                <span class="role-badge role-admin">Admin</span>
+                            }
+                            else
+                            {
+                                <span class="role-badge role-user">User</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="empty-message">
+            No users found.
+        </p>
+    }
+
+</div>

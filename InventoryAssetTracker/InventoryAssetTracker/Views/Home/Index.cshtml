@@ -1,8 +1,67 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    .home-card {
+        max-width: 900px;
+        margin: 60px auto;
+        background-color: #ffffff;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+
+    .home-title {
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .home-text {
+        color: #555;
+        font-size: 16px;
+        line-height: 1.7;
+        margin-bottom: 30px;
+    }
+
+    .home-actions {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .home-button {
+        padding: 12px 20px;
+        border: 1px solid #4a90e2;
+        background: #4a90e2;
+        color: white;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .home-button:hover {
+            background-color: #357bd8;
+            color: white;
+        }
+</style>
+
+<div class="home-card">
+    <h1 class="home-title">Inventory Asset Tracker</h1>
+
+    <p class="home-text">
+        Welcome to the secure inventory and asset tracking system.
+        This application allows users to manage personal assets, search inventory,
+        upload profile photos, and securely access account information through a
+        protected client-server architecture.
+    </p>
+
+    <div class="home-actions">
+        <a asp-controller="Account" asp-action="Login" class="home-button">Login</a>
+        <a asp-controller="Account" asp-action="Register" class="home-button">Register</a>
+        <a asp-controller="Item" asp-action="Index" class="home-button">View Assets</a>
+    </div>
 </div>

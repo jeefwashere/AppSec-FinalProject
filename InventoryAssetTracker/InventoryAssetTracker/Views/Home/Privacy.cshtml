@@ -1,6 +1,70 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Privacy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<style>
+    .privacy-card {
+        max-width: 850px;
+        margin: 60px auto;
+        background-color: #ffffff;
+        padding: 35px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        font-family: Arial, sans-serif;
+    }
+
+    .privacy-title {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #333;
+    }
+
+    .privacy-section {
+        margin-bottom: 20px;
+    }
+
+        .privacy-section h3 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .privacy-section p {
+            color: #555;
+            line-height: 1.7;
+            margin: 0;
+        }
+</style>
+
+<div class="privacy-card">
+    <h2 class="privacy-title">Privacy Policy</h2>
+
+    <div class="privacy-section">
+        <h3>Data Collection</h3>
+        <p>
+            This application stores account and asset information required for inventory tracking.
+            Uploaded profile images and asset-related information are only used for application features.
+        </p>
+    </div>
+
+    <div class="privacy-section">
+        <h3>Access Control</h3>
+        <p>
+            Users can only access their own asset data. Administrative access is restricted by role-based authorization.
+        </p>
+    </div>
+
+    <div class="privacy-section">
+        <h3>Security</h3>
+        <p>
+            Authentication, authorization, validation, secure file upload rules, and protected API endpoints
+            are used to reduce security risks and protect user information.
+        </p>
+    </div>
+
+    <div class="privacy-section">
+        <h3>Retention</h3>
+        <p>
+            Stored data remains in the system only as long as needed for application functionality and project requirements.
+        </p>
+    </div>
+</div>

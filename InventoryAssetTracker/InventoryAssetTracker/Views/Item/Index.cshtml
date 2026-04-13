@@ -1,5 +1,194 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model List<InventoryAssetTracker.DTOs.AssetResponseDTO>
+
 @{
+    ViewData["Title"] = "My Assets";
 }
+
+<style>
+    .asset-page {
+        font-family: Arial, sans-serif;
+    }
+
+    .asset-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .asset-title {
+        margin: 0;
+        color: #333;
+    }
+
+    .add-button {
+        padding: 10px 16px;
+        background: #4a90e2;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+    }
+
+        .add-button:hover {
+            background-color: #357bd8;
+            color: white;
+        }
+
+    .search-box {
+        margin-bottom: 20px;
+        max-width: 450px;
+    }
+
+    .search-input {
+        width: 70%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    }
+
+    .search-button {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 6px;
+        background-color: #4a90e2;
+        color: white;
+        cursor: pointer;
+        margin-left: 8px;
+    }
+
+        .search-button:hover {
+            background-color: #357bd8;
+        }
+
+    .asset-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+    }
+
+        .asset-table th, .asset-table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .asset-table th {
+            background-color: #f5f6f8;
+        }
+
+    .action-wrap {
+        display: flex;
+        gap: 8px;
+    }
+
+    .action-button {
+        padding: 6px 12px;
+        background-color: #4a90e2;
+        color: white;
+        text-decoration: none;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        display: inline-block;
+        font-size: 14px;
+    }
+
+        .action-button:hover {
+            background-color: #357bd8;
+            color: white;
+        }
+
+    .empty-message {
+        margin-top: 20px;
+        color: #666;
+    }
+</style>
+
+<div class="asset-page">
+
+    <!-- HEADER -->
+    <div class="asset-header">
+        <h2 class="asset-title">My Assets</h2>
+
+        <a asp-controller="Item" asp-action="Add" class="add-button">
+            Add Asset
+        </a>
+    </div>
+
+    <!-- SEARCH -->
+    <form asp-controller="Item" asp-action="Index" method="get" class="search-box">
+        <input type="text" name="term" class="search-input" placeholder="Search assets..." />
+        <button type="submit" class="search-button">Search</button>
+    </form>
+
+    <!-- TABLE -->
+    @if (Model != null && Model.Any())
+    {
+        <table class="asset-table">
+            <thead>
+                <tr>
+                    <th width="250">Asset Name</th>
+                    <th width="350">Description</th>
+                    <th width="120">Quantity</th>
+                    <th width="260">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var asset in Model)
+                {
+                    <tr>
+                        <td>@asset.AssetName</td>
+                        <td>@asset.Description</td>
+                        <td>@asset.Quantity</td>
+
+                        <td>
+                            <div class="action-wrap">
+
+                                <!-- DETAILS -->
+                                <a asp-controller="Item"
+                                   asp-action="Details"
+                                   asp-route-id="@asset.AssetId"
+                                   class="action-button">
+                                    Details
+                                </a>
+
+                                <!-- UPDATE -->
+                                <a asp-controller="Item"
+                                   asp-action="Update"
+                                   asp-route-id="@asset.AssetId"
+                                   class="action-button">
+                                    Update
+                                </a>
+
+                                <!-- DELETE -->
+                                <form asp-controller="Item"
+                                      asp-action="Delete"
+                                      method="post"
+                                      style="margin:0;">
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden"
+                                           name="id"
+                                           value="@asset.AssetId" />
+
+                                    <button type="submit"
+                                            class="action-button">
+                                        Delete
+                                    </button>
+                                </form>
+
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="empty-message">
+            No assets found. Add your first asset.
+        </p>
+    }
+</div>
