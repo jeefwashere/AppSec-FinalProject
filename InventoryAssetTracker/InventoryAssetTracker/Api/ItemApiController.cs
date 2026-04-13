@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using InventoryAssetTracker.Models.YourProjectName.Models;
+using InventoryAssetTracker.ViewModels;
 
 namespace InventoryAssetTracker.Api
 {
@@ -84,9 +85,51 @@ namespace InventoryAssetTracker.Api
 		}
 
         [HttpPost]
-        public IActionResult Create()
+        public async Task<IActionResult> Create([FromBody] AddAssetViewModel add)
         {
-            return Ok();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            int? userID = GetCurrentUserID();
+
+            if (userID == null)
+            {
+				await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+				return Unauthorized(new { message = "Invalid session." });
+			}
+
+            User? currentUser = await userContext.Users.FindAsync(userID.Value);
+
+            if (currentUser == null)
+            {
+				await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+				return Unauthorized(new { message = "User not found." });
+			}
+
+            if (add.Quantity < 0)
+            {
+                return BadRequest(new { message = "Item quantity cannot be less than 0." });
+            }
+
+            Asset newAsset = new Asset()
+            {
+                Name = add.AssetName,
+                Description = string.IsNullOrEmpty(add.Description) ? string.Empty : add.Description,
+                Quantity = add.Quantity,
+                Owner = currentUser,
+                OwnerId = currentUser.UserId
+            };
+
+            await userContext.Assets.AddAsync(newAsset);
+            await userContext.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Item added successfully.",
+                assetID = newAsset.AssetId
+            });
         }
 
         [HttpPut("{id}")]

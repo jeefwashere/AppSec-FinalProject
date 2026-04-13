@@ -8,6 +8,6 @@ namespace InventoryAssetTracker.ViewModels
         public string AssetName { get; set; }
         public string Description { get; set; }
         [Required]
-        public string Quantity { get; set; }
+        public int Quantity { get; set; }
     }
 }
