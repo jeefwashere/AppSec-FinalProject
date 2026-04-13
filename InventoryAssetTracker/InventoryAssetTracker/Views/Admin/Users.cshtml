@@ -93,26 +93,28 @@
 </div>
 
 <script>
-    const dummyUsers = [
-        { userId: 1, username: "admin01", email: "admin01@example.com", role: "Admin" },
-        { userId: 2, username: "josh123", email: "josh123@example.com", role: "User" },
-        { userId: 3, username: "mary88", email: "mary88@example.com", role: "User" }
-    ];
-
-    function loadUsers() {
+    async function loadUsers() {
         const body = document.getElementById("usersTableBody");
         body.innerHTML = "";
 
-        dummyUsers.forEach(user => {
+        const response = await fetch("/api/admin/users");
+        if (!response.ok) {
+            body.innerHTML = `<tr><td colspan="4">Failed to load users.</td></tr>`;
+            return;
+        }
+
+        const users = await response.json();
+
+        users.forEach(user => {
             const roleClass = user.role === "Admin" ? "role-admin" : "role-user";
 
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td>${user.userId}</td>
-                <td>${user.username}</td>
-                <td>${user.email}</td>
-                <td><span class="role-badge ${roleClass}">${user.role}</span></td>
-            `;
+                    <td>${user.userId}</td>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td><span class="role-badge ${roleClass}">${user.role}</span></td>
+                `;
 
             body.appendChild(row);
         });

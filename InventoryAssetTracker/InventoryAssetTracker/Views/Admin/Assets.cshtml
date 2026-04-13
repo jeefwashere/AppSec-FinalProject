@@ -76,26 +76,28 @@
 </div>
 
 <script>
-    const dummyAssets = [
-        { assetId: 1, assetName: "Laptop", description: "Dell XPS 13", quantity: 2, owner: "admin01" },
-        { assetId: 2, assetName: "Monitor", description: "27 inch LG", quantity: 1, owner: "josh123" },
-        { assetId: 3, assetName: "Keyboard", description: "Mechanical keyboard", quantity: 3, owner: "mary88" }
-    ];
-
-    function loadAssets() {
+    async function loadAssets() {
         const body = document.getElementById("assetsTableBody");
         body.innerHTML = "";
 
-        dummyAssets.forEach(asset => {
+        const response = await fetch("/api/admin/assets");
+        if (!response.ok) {
+            body.innerHTML = `<tr><td colspan="5">Failed to load assets.</td></tr>`;
+            return;
+        }
+
+        const assets = await response.json();
+
+        assets.forEach(asset => {
             const row = document.createElement("tr");
 
             row.innerHTML = `
-                <td>${asset.assetId}</td>
-                <td>${asset.assetName}</td>
-                <td>${asset.description}</td>
-                <td>${asset.quantity}</td>
-                <td>${asset.owner}</td>
-            `;
+                    <td>${asset.assetId}</td>
+                    <td>${asset.assetName}</td>
+                    <td>${asset.description}</td>
+                    <td>${asset.quantity}</td>
+                    <td>${asset.owner}</td>
+                `;
 
             body.appendChild(row);
         });

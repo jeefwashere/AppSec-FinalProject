@@ -91,46 +91,29 @@
 </div>
 
 <script>
-    const dummyLogs = [
-        {
-            action: "LOGIN_SUCCESS",
-            details: "User logged in successfully.",
-            username: "admin01",
-            createdAt: "2026-04-13 09:15 AM"
-        },
-        {
-            action: "ASSET_CREATED",
-            details: "Created asset: Laptop.",
-            username: "josh123",
-            createdAt: "2026-04-13 09:40 AM"
-        },
-        {
-            action: "PROFILE_PHOTO_UPLOAD",
-            details: "Uploaded a new profile photo.",
-            username: "mary88",
-            createdAt: "2026-04-13 10:05 AM"
-        },
-        {
-            action: "ASSET_DELETED",
-            details: "Deleted asset: Keyboard.",
-            username: "admin01",
-            createdAt: "2026-04-13 10:30 AM"
-        }
-    ];
-
-    function loadLogs() {
+    async function loadLogs() {
         const body = document.getElementById("logsTableBody");
         body.innerHTML = "";
 
-        dummyLogs.forEach(log => {
+        const response = await fetch("/api/admin/logs");
+        if (!response.ok) {
+            body.innerHTML = `<tr><td colspan="4">Failed to load logs.</td></tr>`;
+            return;
+        }
+
+        const logs = await response.json();
+
+        logs.forEach(log => {
+            const createdAt = new Date(log.createdAt).toLocaleString();
+
             const row = document.createElement("tr");
 
             row.innerHTML = `
-                <td class="log-action">${log.action}</td>
-                <td>${log.details}</td>
-                <td class="log-user">${log.username}</td>
-                <td class="log-time">${log.createdAt}</td>
-            `;
+                    <td class="log-action">${log.action}</td>
+                    <td>${log.details}</td>
+                    <td class="log-user">${log.username}</td>
+                    <td class="log-time">${createdAt}</td>
+                `;
 
             body.appendChild(row);
         });

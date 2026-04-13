@@ -1,11 +1,8 @@
-﻿using InventoryAssetTracker.Models;
-
-namespace InventoryAssetTracker.Models
+﻿namespace InventoryAssetTracker.Models
 {
-    public class Auditlog
-    {
+	public class AuditLog
+	{
 		public int AuditLogId { get; set; }
-
 		public string Action { get; set; } = string.Empty;
 		public string Details { get; set; } = string.Empty;
 		public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
