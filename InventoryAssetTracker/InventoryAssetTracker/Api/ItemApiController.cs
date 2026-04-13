@@ -1,16 +1,53 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using InventoryAssetTracker.Data;
+using InventoryAssetTracker.Models;
+using InventoryAssetTracker.DTOs;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventoryAssetTracker.Api
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ItemApiController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult GetAll()
+        private readonly UserContext userContext;
+
+        public ItemApiController(UserContext userContext)
         {
-            return Ok();
+            this.userContext = userContext;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetMyItems()
+        {
+            int? userId = GetCurrentUserID();
+
+            if (userId == null)
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                return Unauthorized(new { message = "Invalid session." });
+            }
+
+			List<AssetResponseDTO> selectedAssets = await userContext.Assets
+	            .Where(asset => asset.OwnerId == userId.Value)
+	            .Select(asset => new AssetResponseDTO
+	            {
+		            AssetId = asset.AssetId,
+		            AssetName = asset.Name,
+		            Description = asset.Description,
+		            Quantity = asset.Quantity,
+		            OwnerId = asset.OwnerId
+	            })
+	            .ToListAsync();
+
+			return Ok(selectedAssets);
         }
 
         [HttpGet("{id}")]
@@ -35,6 +72,18 @@ namespace InventoryAssetTracker.Api
         public IActionResult Delete(int id)
         {
             return Ok();
+        }
+
+        private int? GetCurrentUserID()
+        {
+            string? userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!int.TryParse(userIdClaim, out int userId))
+            {
+                return null;
+            }
+
+            return userId;
         }
     }
 }
