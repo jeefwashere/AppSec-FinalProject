@@ -23,7 +23,7 @@ namespace InventoryAssetTracker.Controllers
         [HttpGet]
         public IActionResult Register()
         {
-            return View(new RegisterViewModel());
+            return View();
         }
     }
 }

@@ -183,7 +183,7 @@ namespace InventoryAssetTracker.Api
 		}
 
 		[HttpDelete("{id}")]
-		public async IActionResult Delete(int id)
+		public async Task<IActionResult> Delete(int id)
 		{
 			int? userID = GetCurrentUserID();
 
