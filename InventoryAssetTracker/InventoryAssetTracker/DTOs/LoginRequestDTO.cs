@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace InventoryAssetTracker.DTOs
-{
+{/// for login request, it has username and password
 	public class LoginRequestDTO
 	{
 		[Required]

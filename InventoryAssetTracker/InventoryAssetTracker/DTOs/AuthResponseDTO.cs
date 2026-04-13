@@ -1,5 +1,8 @@
 ﻿namespace InventoryAssetTracker.DTOs
 {
+	/// <summary>
+	/// response for login and register, it has success status, message and redirect url for refirect
+	/// </summary>
 	public class AuthResponseDTO
 	{
 		public bool Success { get; set; }

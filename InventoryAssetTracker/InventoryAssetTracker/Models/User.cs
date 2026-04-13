@@ -2,6 +2,9 @@
 namespace InventoryAssetTracker.Models
 
 {
+	/// <summary>
+	/// user model for database, it has user information and relationship with other tables
+	/// </summary>
 	public class User
 	{
 		public int UserId { get; set; }
