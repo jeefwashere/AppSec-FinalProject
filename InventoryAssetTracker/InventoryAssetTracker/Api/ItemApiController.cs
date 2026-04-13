@@ -9,7 +9,6 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using InventoryAssetTracker.ViewModels;
 
 namespace InventoryAssetTracker.Api
 {
@@ -84,8 +83,8 @@ namespace InventoryAssetTracker.Api
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create([FromBody] AddAssetViewModel add)
-		{
+        public async Task<IActionResult> Create([FromBody] CreateAssetRequestDTO add)
+        {
 			if (!ModelState.IsValid)
 			{
 				return BadRequest(ModelState);
@@ -132,7 +131,7 @@ namespace InventoryAssetTracker.Api
 		}
 
 		[HttpPut("{id}")]
-		public async Task<IActionResult> Update(int id, [FromBody] UpdateAssetViewModel update)
+		public async Task<IActionResult> Update(int id, [FromBody] UpdateAssetRequestDTO update)
 		{
 			if (!ModelState.IsValid)
 			{
