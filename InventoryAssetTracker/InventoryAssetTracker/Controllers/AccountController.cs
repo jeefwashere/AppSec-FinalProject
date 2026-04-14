@@ -1,4 +1,9 @@
-﻿using System.Security.Claims;
+﻿/*
+ * FILE : AccountController.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Handles account pages for login, register, profile, and logout.
+ */
+using System.Security.Claims;
 using InventoryAssetTracker.Data;
 using InventoryAssetTracker.DTOs;
 using InventoryAssetTracker.Models;
