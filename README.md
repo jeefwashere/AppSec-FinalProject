@@ -1,4 +1,3 @@
-.
 
 📦 Inventory Asset Tracker
 📖 Overview
