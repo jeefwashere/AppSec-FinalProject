@@ -1,11 +1,11 @@
- Inventory Asset Tracker
- Overview
+ # Inventory Asset Tracker
+ ## Overview
 
 The Inventory Asset Tracker is a secure client–server web application designed to help users manage and track assets such as equipment, devices, and other items.
 
 The system supports both regular users and administrators, with a strong focus on security, role-based access control, and safe data handling.
 
-🏗️ Architecture
+### 🏗️ Architecture
 
 The application follows a layered architecture:
 
@@ -26,7 +26,7 @@ Stores users and assets
 
  The UI does not directly access the database, ensuring proper separation of concerns.
 
-👥 User Roles
+### 👥 User Roles
 
 The system includes two roles:
 
@@ -38,7 +38,7 @@ Admin
 Access Admin panel
 View all users and assets
 Monitor system activity (logs)
-🔑 Features
+### 🔑 Features
 Core Features
 User Registration and Login
 Profile Management
@@ -46,7 +46,7 @@ Asset Management (CRUD)
 Search functionality
 File Upload (Profile Photo)
 Admin Dashboard
-🎯 Required Entry Points (Threat Surface)
+### 🎯 Required Entry Points (Threat Surface)
 
 The application includes all required entry points:
 
@@ -55,7 +55,7 @@ Search form (Assets)
 File upload (Profile photo)
 APIs (REST endpoints)
 Admin panel (role-based access)
-🔐 Security Features
+### 🔐 Security Features
 
 The application implements multiple security controls:
 
@@ -77,7 +77,7 @@ Entity Framework Core used
 Prevents SQL injection through parameterized queries
 Logging & Monitoring
 Admin logs interface for activity tracking
-🛡️ OWASP Top 10 Coverage
+### 🛡️ OWASP Top 10 Coverage
 
 The application addresses the following OWASP vulnerabilities:
 
@@ -91,7 +91,7 @@ A07: Identification & Authentication Failures
 Secure login with hashed passwords and session management
 A09: Security Logging & Monitoring Failures
 Admin logs allow tracking of system activity
-🧠 STRIDE Threat Model
+### 🧠 STRIDE Threat Model
 Threat	Example	Mitigation
 Spoofing	Fake login attempt	Password hashing + authentication
 Tampering	Modify asset data	Input validation + authorization
@@ -99,7 +99,7 @@ Repudiation	User denies actions	Logging system
 Information Disclosure	Access sensitive data	Authentication + access control
 Denial of Service	Large file uploads	File size limits
 Elevation of Privilege	Access admin panel	Role-based access control
-⚙️ Requirements
+### ⚙️ Requirements
 
 Before running the project, install:
 
@@ -107,7 +107,7 @@ Before running the project, install:
 Visual Studio 2022 (or newer)
 SQL Server (LocalDB or full version)
 SQL Server Management Studio (optional)
-🚀 Setup Instructions
+### 🚀 Setup Instructions
 1. Clone the repository
 git clone https://github.com/your-username/InventoryAssetTracker.git
 2. Open the project
@@ -139,7 +139,7 @@ UPDATE Users
 SET Role = 'Admin'
 WHERE Username = 'your-username';
 Logout and login again
-📊 Assignment Requirements Covered
+### 📊 Assignment Requirements Covered
 
 This project meets all required criteria:
 
@@ -152,7 +152,7 @@ File upload security ✔
 OWASP Top 10 implementation ✔
 STRIDE threat modeling ✔
 👨‍💻 Authors
-Add your group members here
+Josiah Williams, Jeff David Tieng, Ricardo Gao
 🏁 Final Notes
 
 This application demonstrates a secure client–server architecture with a realistic threat surface. Security best practices such as authentication, authorization, validation, and logging have been implemented to align with industry standards.
