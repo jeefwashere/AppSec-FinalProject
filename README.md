@@ -151,8 +151,8 @@ Role-based access ✔
 File upload security ✔
 OWASP Top 10 implementation ✔
 STRIDE threat modeling ✔
-👨‍💻 Authors
+### 👨‍💻 Authors
 Josiah Williams, Jeff David Tieng, Ricardo Gao
-🏁 Final Notes
+### 🏁 Final Notes
 
 This application demonstrates a secure client–server architecture with a realistic threat surface. Security best practices such as authentication, authorization, validation, and logging have been implemented to align with industry standards.
