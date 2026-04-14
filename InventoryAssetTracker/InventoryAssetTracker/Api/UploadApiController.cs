@@ -1,4 +1,9 @@
-﻿using InventoryAssetTracker.Data;
+﻿/*
+ * FILE : UploadApiController.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Handles upload requests for saving and updating profile photos.
+ */
+using InventoryAssetTracker.Data;
 using InventoryAssetTracker.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
@@ -29,7 +34,7 @@ namespace InventoryAssetTracker.Api
         {
             int? userID = GetCurrentUserID();
 
-            // 🔥 CHANGE: removed forced sign-out (not needed)
+            
             if (userID == null)
             {
                 return Unauthorized(new { message = "Invalid session." });

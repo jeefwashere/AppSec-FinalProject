@@ -1,4 +1,9 @@
-﻿using InventoryAssetTracker.Data;
+﻿/*
+ * FILE : AdminApiController.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Handles admin requests for managing users, assets, and system logs.
+ */
+using InventoryAssetTracker.Data;
 using InventoryAssetTracker.DTOs;
 using InventoryAssetTracker.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -14,7 +19,7 @@ namespace InventoryAssetTracker.Api
     public class AdminApiController : ControllerBase
     {
         private readonly UserContext userContext;
-
+		
         public AdminApiController(UserContext userContext)
         {
             this.userContext = userContext;

@@ -4,9 +4,11 @@ using InventoryAssetTracker.Data;
 using InventoryAssetTracker.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
-
+//reference https://learn.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-10.0
 // Add services to the container. automaticlly
+//each the
 builder.Services.AddScoped<ActionLoggingFilter>();
+//for all filter add to the controller with addControllersWithViews, and add the filter to the options
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.AddService<ActionLoggingFilter>();
