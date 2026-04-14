@@ -2,7 +2,7 @@
  * FILE : Asset.cs
  * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
  * DESCRIPTION : Defines the asset model used for inventory database records.
- */
+ // Referenecs: MVC Pattern https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-10.0&tabs=visual-studio*/
 using InventoryAssetTracker.Models;
 
 namespace InventoryAssetTracker.Models

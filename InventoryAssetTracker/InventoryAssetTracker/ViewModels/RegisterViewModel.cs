@@ -3,6 +3,7 @@
  * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
  * DESCRIPTION : Defines the register view model used for account pages.
  */
+﻿// Referenecs: MVC Pattern https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-10.0&tabs=visual-studio 
 using System.ComponentModel.DataAnnotations;
 
 namespace InventoryAssetTracker.ViewModels
