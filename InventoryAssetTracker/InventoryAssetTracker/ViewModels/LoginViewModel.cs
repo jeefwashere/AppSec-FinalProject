@@ -1,4 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿/*
+ * FILE : LoginViewModel.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Defines the login view model used for account pages.
+ */
+using System.ComponentModel.DataAnnotations;
 
 namespace InventoryAssetTracker.ViewModels
 {

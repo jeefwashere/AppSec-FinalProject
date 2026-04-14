@@ -1,4 +1,9 @@
-﻿namespace InventoryAssetTracker.Models
+﻿/*
+ * FILE : Upload.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Defines the upload model used for stored file records.
+ */
+namespace InventoryAssetTracker.Models
 {
 	/// <summary>
 	/// upload model for database, it has upload information and relationship with other tables

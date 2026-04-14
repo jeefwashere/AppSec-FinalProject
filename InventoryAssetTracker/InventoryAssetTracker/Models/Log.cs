@@ -1,3 +1,8 @@
+/*
+ * FILE : Log.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Defines the log model used for action logging records.
+ */
 namespace InventoryAssetTracker.Models
 {
     public class Log

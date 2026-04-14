@@ -1,4 +1,8 @@
-﻿
+﻿/*
+ * FILE : User.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Defines the user model used for application accounts.
+ */
 namespace InventoryAssetTracker.Models
 
 {

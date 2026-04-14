@@ -1,4 +1,9 @@
-﻿using InventoryAssetTracker.Models;
+﻿/*
+ * FILE : Asset.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Defines the asset model used for inventory database records.
+ */
+using InventoryAssetTracker.Models;
 
 namespace InventoryAssetTracker.Models
 {

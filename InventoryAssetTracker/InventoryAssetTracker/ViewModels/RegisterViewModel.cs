@@ -1,4 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿/*
+ * FILE : RegisterViewModel.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Defines the register view model used for account pages.
+ */
+using System.ComponentModel.DataAnnotations;
 
 namespace InventoryAssetTracker.ViewModels
 {
