@@ -56,11 +56,11 @@
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .form-input:focus {
-        outline: none;
-        border-color: #4a90e2;
-        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
-    }
+        .form-input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+        }
 
     .button-row {
         margin-top: 20px;
@@ -88,11 +88,17 @@
         transition: background-color 0.2s ease;
     }
 
-    .form-button:hover,
-    .register-button:hover {
-        background-color: #357bd8;
-        color: white;
-    }
+        .form-button:hover,
+        .register-button:hover {
+            background-color: #357bd8;
+            color: white;
+        }
+
+        .form-button:disabled {
+            background-color: #93b9e8;
+            border-color: #93b9e8;
+            cursor: not-allowed;
+        }
 
     .error-box {
         margin-top: 16px;
@@ -104,19 +110,19 @@
         font-weight: 600;
     }
 
-    .error-box p {
-        margin: 0 0 6px 0;
-    }
+        .error-box p {
+            margin: 0 0 6px 0;
+        }
 
-    .error-box p:last-child {
-        margin-bottom: 0;
-    }
+            .error-box p:last-child {
+                margin-bottom: 0;
+            }
 </style>
 
 <div class="account-card">
     <h2 class="account-title">Login</h2>
 
-    <form asp-controller="Account" asp-action="Login" method="post">
+    <form asp-controller="Account" asp-action="Login" method="post" onsubmit="return handleLoginSubmit(this)">
         @Html.AntiForgeryToken()
         <input type="hidden" asp-for="ReturnUrl" />
 
@@ -131,7 +137,7 @@
         </div>
 
         <div class="button-row">
-            <button type="submit" class="form-button">Login</button>
+            <button type="submit" class="form-button" id="loginButton">Login</button>
             <a asp-controller="Account" asp-action="Register" class="form-button">Register</a>
         </div>
 
@@ -146,3 +152,17 @@
         }
     </form>
 </div>
+
+<script>
+    function handleLoginSubmit(form) {
+        const submitButton = form.querySelector('button[type="submit"]');
+
+        if (!submitButton || submitButton.disabled) {
+            return false;
+        }
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Logging in...";
+        return true;
+    }
+</script>
