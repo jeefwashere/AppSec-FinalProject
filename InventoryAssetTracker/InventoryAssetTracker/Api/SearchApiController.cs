@@ -35,7 +35,7 @@ namespace InventoryAssetTracker.Api
 				await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 				return Unauthorized(new { message = "Invalid session." });
 			}
-
+			//query object 
 			IQueryable<Asset> query = userContext.Assets.Where(asset => asset.OwnerId == userID.Value);
 
 			if (!string.IsNullOrWhiteSpace(term))

@@ -1,11 +1,16 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using InventoryAssetTracker.Data;
+using InventoryAssetTracker.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+// Add services to the container. automaticlly
+builder.Services.AddScoped<ActionLoggingFilter>();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.AddService<ActionLoggingFilter>();
+});
 builder.Services.AddHttpClient();
 builder.Services.AddDbContext<UserContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -35,11 +40,11 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapControllers();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
-
 
