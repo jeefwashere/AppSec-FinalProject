@@ -101,6 +101,11 @@ namespace InventoryAssetTracker.Api
                 return BadRequest(new { message = "You cannot change your own role." });
             }
 
+            if (user.Username.Equals("admin", StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest(new { message = "The admin account cannot be edited." });
+            }
+
             user.Role = update.Role;
 
             await userContext.SaveChangesAsync();
@@ -137,6 +142,11 @@ namespace InventoryAssetTracker.Api
             if (user == null)
             {
                 return NotFound(new { message = "User not found." });
+            }
+
+            if (user.Username.Equals("admin", StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest(new { message = "The admin account cannot be deleted." });
             }
 
             if (user.Role == "Admin")

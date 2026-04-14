@@ -40,24 +40,24 @@
         transition: background-color 0.2s ease, transform 0.1s ease;
     }
 
-    .back-button:hover,
-    .action-button:hover {
-        background-color: #357bd8;
-        color: white;
-    }
+        .back-button:hover,
+        .action-button:hover {
+            background-color: #357bd8;
+            color: white;
+        }
 
-    .back-button:active,
-    .action-button:active {
-        transform: translateY(1px);
-    }
+        .back-button:active,
+        .action-button:active {
+            transform: translateY(1px);
+        }
 
     .delete-button {
         background: #dc3545;
     }
 
-    .delete-button:hover {
-        background: #bb2d3b;
-    }
+        .delete-button:hover {
+            background: #bb2d3b;
+        }
 
     .admin-table-wrapper {
         background: white;
@@ -72,24 +72,24 @@
         background: white;
     }
 
-    .admin-table th,
-    .admin-table td {
-        padding: 16px 14px;
-        border-bottom: 1px solid #e5e7eb;
-        text-align: left;
-        vertical-align: middle;
-    }
+        .admin-table th,
+        .admin-table td {
+            padding: 16px 14px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+            vertical-align: middle;
+        }
 
-    .admin-table th {
-        background-color: #f8fafc;
-        color: #374151;
-        font-size: 15px;
-        font-weight: 700;
-    }
+        .admin-table th {
+            background-color: #f8fafc;
+            color: #374151;
+            font-size: 15px;
+            font-weight: 700;
+        }
 
-    .admin-table tr:last-child td {
-        border-bottom: none;
-    }
+        .admin-table tr:last-child td {
+            border-bottom: none;
+        }
 
     .modern-input,
     .modern-select {
@@ -106,11 +106,11 @@
         box-sizing: border-box;
     }
 
-    .modern-input:focus,
-    .modern-select:focus {
-        border-color: #4a90e2;
-        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
-    }
+        .modern-input:focus,
+        .modern-select:focus {
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+        }
 
     .actions-cell {
         display: flex;
@@ -169,16 +169,27 @@
         background: #6b7280;
     }
 
-    .cancel-button:hover {
-        background: #4b5563;
-    }
+        .cancel-button:hover {
+            background: #4b5563;
+        }
 
     .danger-button {
         background: #dc3545;
     }
 
-    .danger-button:hover {
-        background: #bb2d3b;
+        .danger-button:hover {
+            background: #bb2d3b;
+        }
+
+    .action-button:disabled,
+    .modern-select:disabled,
+    .modern-input:disabled {
+        background-color: #cbd5e1;
+        border-color: #cbd5e1;
+        color: #6b7280;
+        cursor: not-allowed;
+        opacity: 0.7;
+        box-shadow: none;
     }
 </style>
 
@@ -261,8 +272,6 @@
         }
     }
 
-    const currentAdminId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
-
     function showMessage(message, isSuccess) {
         const box = document.getElementById("statusMessage");
         box.textContent = message;
@@ -288,23 +297,23 @@
         const users = await response.json();
 
         users.forEach(user => {
-            const isSelf = String(user.userId) === String(currentAdminId);
+            const isProtectedAdmin = user.username.toLowerCase() === "admin";
 
             const row = document.createElement("tr");
             row.innerHTML = `
             <td>${user.userId}</td>
-            <td><input type="text" value="${user.username}" id="username-${user.userId}" class="modern-input" /></td>
-            <td><input type="email" value="${user.email}" id="email-${user.userId}" class="modern-input" /></td>
+            <td><input type="text" value="${user.username}" id="username-${user.userId}" class="modern-input" ${isProtectedAdmin ? "disabled" : ""} /></td>
+            <td><input type="email" value="${user.email}" id="email-${user.userId}" class="modern-input" ${isProtectedAdmin ? "disabled" : ""} /></td>
             <td>
-                <select id="role-${user.userId}" class="modern-select" ${isSelf ? "disabled" : ""}>
+                <select id="role-${user.userId}" class="modern-select" ${isProtectedAdmin ? "disabled" : ""}>
                     <option value="User" ${user.role === "User" ? "selected" : ""}>User</option>
                     <option value="Admin" ${user.role === "Admin" ? "selected" : ""}>Admin</option>
                 </select>
             </td>
             <td>
                 <div class="actions-cell">
-                    <button type="button" class="action-button" onclick="updateUser(${user.userId})">Save</button>
-                        <button type="button" class="action-button delete-button" onclick="openDeleteModal(${user.userId}, '${user.username.replace(/'/g, "\\'")}')" ${isSelf ? "disabled" : ""}>Delete</button>
+                    <button type="button" class="action-button" onclick="updateUser(${user.userId})" ${isProtectedAdmin ? "disabled" : ""}>Save</button>
+                    <button type="button" class="action-button delete-button" onclick="openDeleteModal(${user.userId}, '${user.username.replace(/'/g, "\\'")}')" ${isProtectedAdmin ? "disabled" : ""}>Delete</button>
                 </div>
             </td>
         `;
@@ -314,10 +323,6 @@
     }
 
     async function updateUser(userId) {
-        const isSelf = String(userId) === String(currentAdminId);
-
-        const roleSelect = document.getElementById(`role-${userId}`);
-
         const payload = {
             username: document.getElementById(`username-${userId}`).value,
             email: document.getElementById(`email-${userId}`).value,
@@ -332,25 +337,6 @@
 
         const result = await response.json();
         showMessage(result.message || "Update finished.", response.ok);
-
-        if (response.ok) {
-            loadUsers();
-        }
-    }
-
-    async function deleteUser(userId) {
-        const confirmed = confirm("Are you sure you want to delete this user? This action cannot be undone.");
-
-        if (!confirmed) {
-            return;
-        }
-
-        const response = await fetch(`/api/admin/users/${userId}`, {
-            method: "DELETE"
-        });
-
-        const result = await response.json();
-        showMessage(result.message || "Delete finished.", response.ok);
 
         if (response.ok) {
             loadUsers();
