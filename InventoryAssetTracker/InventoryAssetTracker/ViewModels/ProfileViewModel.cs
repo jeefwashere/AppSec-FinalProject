@@ -1,15 +1,15 @@
 ﻿namespace InventoryAssetTracker.ViewModels
 {
-   
-        public class ProfileViewModel
-        {
-            public string Username { get; set; } = string.Empty;
 
-            public string Email { get; set; } = string.Empty;
+    public class ProfileViewModel
+    {
+        public string Username { get; set; } = string.Empty;
 
-            public string Role { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
 
-            public string? ProfilePhotoPath { get; set; }
-        }
-    
+        public string Role { get; set; } = string.Empty;
+
+        public string? ProfilePhotoPath { get; set; }
+    }
+
 }

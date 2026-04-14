@@ -12,11 +12,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InventoryAssetTracker.Api
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	[Authorize]
 	public class SearchApiController : ControllerBase
 	{
 		private readonly UserContext userContext;

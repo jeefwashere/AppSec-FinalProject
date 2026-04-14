@@ -1,4 +1,5 @@
-﻿namespace InventoryAssetTracker.DTOs
+﻿// References: https://medium.com/@mariorodrguezgalicia/what-is-a-dto-in-spring-boot-and-why-should-you-use-it-97651506e516 
+namespace InventoryAssetTracker.DTOs
 {
 	public class AssetResponseDTO
 	{
