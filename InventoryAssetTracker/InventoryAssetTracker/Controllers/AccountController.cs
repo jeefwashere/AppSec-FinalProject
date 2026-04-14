@@ -27,6 +27,11 @@ namespace InventoryAssetTracker.Controllers
         [AllowAnonymous]
         public IActionResult Login(string? returnUrl = null)
         {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Item");
+            }
+
             LoginViewModel model = new LoginViewModel
             {
                 ReturnUrl = returnUrl
@@ -99,6 +104,11 @@ namespace InventoryAssetTracker.Controllers
         [AllowAnonymous]
         public IActionResult Register()
         {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Item");
+            }
+
             return View();
         }
 

@@ -7,75 +7,104 @@
 
 <style>
     .account-card {
-        max-width: 430px;
+        max-width: 560px;
         margin: 80px auto;
         background-color: #ffffff;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        padding: 36px;
+        border-radius: 14px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.10);
         font-family: Arial, sans-serif;
     }
 
     .account-title {
         text-align: center;
-        margin-bottom: 25px;
-        color: #333;
+        margin-bottom: 30px;
+        color: #1f2937;
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    .account-container {
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
     }
 
     .form-group {
-        margin-bottom: 15px;
+        margin-bottom: 18px;
     }
 
     .form-label {
         display: block;
-        margin-bottom: 6px;
-        font-weight: 600;
-        color: #333;
+        margin-bottom: 8px;
+        color: #1f2937;
+        font-size: 15px;
     }
 
     .form-input {
         width: 100%;
-        padding: 10px 12px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font-size: 14px;
+        padding: 12px 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        font-size: 15px;
         box-sizing: border-box;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .form-input:focus {
         outline: none;
         border-color: #4a90e2;
-        box-shadow: 0 0 4px rgba(74, 144, 226, 0.4);
+        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
     }
 
     .button-row {
-        margin-top: 18px;
+        margin-top: 20px;
         display: flex;
-        gap: 10px;
+        gap: 12px;
+        flex-wrap: wrap;
     }
 
-    .form-button {
-        width: 120px;
-        padding: 8px;
+    .form-button,
+    .register-button {
+        width: 130px;
+        padding: 10px 0;
         border: 1px solid #4a90e2;
         background: #4a90e2;
         color: white;
         cursor: pointer;
         text-align: center;
-        border-radius: 6px;
+        border-radius: 8px;
         text-decoration: none;
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        font-size: 15px;
+        transition: background-color 0.2s ease;
     }
 
-    .form-button:hover {
+    .form-button:hover,
+    .register-button:hover {
         background-color: #357bd8;
         color: white;
     }
 
     .error-box {
-        color: red;
-        margin-top: 12px;
-        font-weight: bold;
+        margin-top: 16px;
+        padding: 12px 14px;
+        border-radius: 8px;
+        background-color: #fdecea;
+        color: #b71c1c;
+        border: 1px solid #ef9a9a;
+        font-weight: 600;
+    }
+
+    .error-box p {
+        margin: 0 0 6px 0;
+    }
+
+    .error-box p:last-child {
+        margin-bottom: 0;
     }
 </style>
 
