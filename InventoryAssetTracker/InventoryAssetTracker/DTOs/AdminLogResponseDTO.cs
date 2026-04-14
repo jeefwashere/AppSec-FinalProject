@@ -1,4 +1,9 @@
-﻿namespace InventoryAssetTracker.DTOs
+﻿/*
+ * FILE : AdminLogResponseDTO.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Stores admin log response data displayed in dashboard pages.
+ */
+namespace InventoryAssetTracker.DTOs
 {
 	public class AdminLogResponseDTO
 	{

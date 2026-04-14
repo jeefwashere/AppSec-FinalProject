@@ -3,7 +3,12 @@ using InventoryAssetTracker.Models;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Security.Claims;
-
+/*
+ * FILE : ActionLoggingFilter.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Logs action executions for monitoring and debugging purposes.
+ */
+//reference https://learn.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-10.0
 namespace InventoryAssetTracker.Filters
 {
     public class ActionLoggingFilter : IAsyncActionFilter

@@ -1,4 +1,9 @@
-﻿namespace InventoryAssetTracker.DTOs
+﻿/*
+ * FILE : AdminUserResponseDTO.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Stores admin user response data sent back to clients.
+ */
+namespace InventoryAssetTracker.DTOs
 {
 	public class AdminUserResponseDTO
 	{

@@ -1,4 +1,9 @@
-﻿// References: https://medium.com/@mariorodrguezgalicia/what-is-a-dto-in-spring-boot-and-why-should-you-use-it-97651506e516 
+﻿/*
+ * FILE : RegisterRequestDTO.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Stores registration request data submitted by new users.
+ */
+// References: https://medium.com/@mariorodrguezgalicia/what-is-a-dto-in-spring-boot-and-why-should-you-use-it-97651506e516 
 using System.ComponentModel.DataAnnotations;
 
 namespace InventoryAssetTracker.DTOs
