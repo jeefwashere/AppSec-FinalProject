@@ -35,11 +35,11 @@
         transition: 0.2s;
     }
 
-        .back-button:hover,
-        .action-button:hover {
-            background-color: #357bd8;
-            color: white;
-        }
+    .back-button:hover,
+    .action-button:hover {
+        background-color: #357bd8;
+        color: white;
+    }
 
     .delete-button {
         background: #dc3545;
@@ -61,25 +61,26 @@
         border-collapse: collapse;
     }
 
-        .admin-table th,
-        .admin-table td {
-            padding: 16px 14px;
-            border-bottom: 1px solid #e5e7eb;
-            text-align: left;
-        }
+    .admin-table th,
+    .admin-table td {
+        padding: 18px 18px;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: left;
+        vertical-align: middle;
+    }
 
-        .admin-table th {
-            background-color: #f8fafc;
-            font-weight: 700;
-        }
+    .admin-table th {
+        background-color: #f8fafc;
+        font-weight: 700;
+    }
 
-        .admin-table tr:last-child td {
-            border-bottom: none;
-        }
+    .admin-table tr:last-child td {
+        border-bottom: none;
+    }
 
     .modern-input {
         width: 100%;
-        max-width: 240px;
+        max-width: 220px;
         padding: 10px 12px;
         border: 1px solid #cbd5e1;
         border-radius: 8px;
@@ -88,10 +89,10 @@
         transition: 0.2s;
     }
 
-        .modern-input:focus {
-            border-color: #4a90e2;
-            box-shadow: 0 0 0 3px rgba(74,144,226,0.15);
-        }
+    .modern-input:focus {
+        border-color: #4a90e2;
+        box-shadow: 0 0 0 3px rgba(74,144,226,0.15);
+    }
 
     .actions-cell {
         display: flex;
@@ -106,6 +107,61 @@
         display: none;
         font-weight: 500;
     }
+
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.45);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    .modal-box {
+        width: 100%;
+        max-width: 420px;
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+        padding: 24px;
+    }
+
+    .modal-title {
+        margin: 0 0 10px 0;
+        color: #1f2937;
+        font-size: 1.3rem;
+        font-weight: 700;
+    }
+
+    .modal-text {
+        margin: 0 0 18px 0;
+        color: #4b5563;
+        line-height: 1.5;
+    }
+
+    .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .cancel-button {
+        background: #6b7280;
+    }
+
+    .cancel-button:hover {
+        background: #4b5563;
+    }
+
+    .danger-button {
+        background: #dc3545;
+    }
+
+    .danger-button:hover {
+        background: #bb2d3b;
+    }
+
 </style>
 
 <div class="admin-page">
@@ -136,9 +192,57 @@
 
     <div id="statusMessage" class="status-message"></div>
 
+    <div id="deleteConfirmModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 class="modal-title">Delete Asset</h3>
+            <p id="deleteConfirmText" class="modal-text"></p>
+
+            <div class="modal-actions">
+                <button type="button" class="action-button danger-button" id="confirmDeleteButton">Delete</button>
+                <button type="button" class="action-button cancel-button" onclick="closeDeleteModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
+
+    let pendingDeleteAssetId = null;
+
+    function openDeleteModal(assetId, assetName) {
+        pendingDeleteAssetId = assetId;
+
+        const text = document.getElementById("deleteConfirmText");
+        text.textContent = `Are you sure you want to delete asset "${assetName}"? This action cannot be undone.`;
+
+        const modal = document.getElementById("deleteConfirmModal");
+        modal.style.display = "flex";
+    }
+
+    function closeDeleteModal() {
+        pendingDeleteAssetId = null;
+        document.getElementById("deleteConfirmModal").style.display = "none";
+    }
+
+    async function confirmDeleteAsset() {
+        if (pendingDeleteAssetId === null) {
+            return;
+        }
+
+        const response = await fetch(`/api/admin/assets/${pendingDeleteAssetId}`, {
+            method: "DELETE"
+        });
+
+        const result = await response.json();
+        showMessage(result.message || "Delete finished.", response.ok);
+
+        closeDeleteModal();
+
+        if (response.ok) {
+            loadAssets();
+        }
+    }
+
     function showMessage(message, isSuccess) {
         const box = document.getElementById("statusMessage");
         box.textContent = message;
@@ -175,7 +279,7 @@
                     <td>
                         <div class="actions-cell">
                             <button class="action-button" onclick="updateAsset(${asset.assetId})">Save</button>
-                            <button class="action-button delete-button" onclick="deleteAsset(${asset.assetId})">Delete</button>
+                                <button class="action-button delete-button" onclick="openDeleteModal(${asset.assetId}, '${asset.assetName.replace(/'/g, "\\'")}')">Delete</button>
                         </div>
                     </td>
                 `;
@@ -205,18 +309,8 @@
         }
     }
 
-    async function deleteAsset(assetId) {
-        const response = await fetch(`/api/admin/assets/${assetId}`, {
-            method: "DELETE"
-        });
-
-        const result = await response.json();
-        showMessage(result.message || "Delete finished.", response.ok);
-
-        if (response.ok) {
-            loadAssets();
-        }
-    }
-
-    window.onload = loadAssets;
+    window.onload = function () {
+        document.getElementById("confirmDeleteButton").addEventListener("click", confirmDeleteAsset);
+        loadAssets();
+    };
 </script>

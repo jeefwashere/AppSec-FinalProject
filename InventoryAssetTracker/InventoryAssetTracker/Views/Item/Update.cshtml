@@ -5,88 +5,107 @@
 
 <style>
     .update-card {
-        max-width: 450px;
+        max-width: 560px;
         margin: 80px auto;
         background-color: #ffffff;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        padding: 36px;
+        border-radius: 14px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.10);
         font-family: Arial, sans-serif;
     }
 
     .update-title {
         text-align: center;
-        margin-bottom: 25px;
-        color: #333;
+        margin-bottom: 30px;
+        color: #1f2937;
+        font-size: 2rem;
+        font-weight: 700;
     }
 
     .update-container {
-        width: 320px;
+        width: 100%;
+        max-width: 400px;
         margin: 0 auto;
     }
 
     .update-row {
-        margin-bottom: 15px;
+        margin-bottom: 18px;
     }
 
     .update-label {
         display: block;
-        margin-bottom: 6px;
-        font-weight: 600;
-        color: #333;
+        margin-bottom: 8px;
+        color: #1f2937;
+        font-size: 15px;
     }
 
     .update-input {
         width: 100%;
-        padding: 10px 12px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font-size: 14px;
+        padding: 12px 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        font-size: 15px;
         box-sizing: border-box;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-        .update-input:focus {
-            outline: none;
-            border-color: #4a90e2;
-            box-shadow: 0 0 4px rgba(74, 144, 226, 0.4);
-        }
+    .update-input:focus {
+        outline: none;
+        border-color: #4a90e2;
+        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+    }
 
     .update-actions {
-        margin-top: 18px;
+        margin-top: 20px;
         display: flex;
-        gap: 10px;
+        gap: 12px;
+        flex-wrap: wrap;
     }
 
-    .update-button, .back-button {
-        width: 120px;
-        padding: 8px;
+    .update-button,
+    .back-button {
+        width: 130px;
+        padding: 10px 0;
         border: 1px solid #4a90e2;
         background: #4a90e2;
         color: white;
         cursor: pointer;
         text-align: center;
-        border-radius: 6px;
+        border-radius: 8px;
         text-decoration: none;
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        font-size: 15px;
+        transition: background-color 0.2s ease;
     }
 
-        .update-button:hover, .back-button:hover {
-            background-color: #357bd8;
-            color: white;
-        }
-
-    .update-error {
-        color: red;
-        text-align: center;
-        margin-top: 12px;
-        font-weight: bold;
+    .update-button:hover,
+    .back-button:hover {
+        background-color: #357bd8;
+        color: white;
     }
 
-    .update-success {
-        color: green;
-        text-align: center;
-        margin-top: 12px;
-        font-weight: bold;
+    .message-box {
+        margin-top: 16px;
+        padding: 12px 14px;
+        border-radius: 8px;
+        display: none;
+    }
+
+    .message-error {
+        display: block;
+        background-color: #fdecea;
+        color: #b71c1c;
+        border: 1px solid #ef9a9a;
+    }
+
+    .message-success {
+        display: block;
+        background-color: #e8f5e9;
+        color: #2e7d32;
+        border: 1px solid #81c784;
     }
 </style>
 
@@ -108,7 +127,7 @@
 
         <div class="update-row">
             <label class="update-label" for="quantity">Quantity</label>
-            <input id="quantity" type="number" class="update-input" />
+            <input id="quantity" type="number" min="0" class="update-input" />
         </div>
 
         <div class="update-actions">
@@ -116,11 +135,19 @@
             <a asp-action="Index" asp-controller="Item" class="back-button">Back</a>
         </div>
 
-        <div id="messageBox"></div>
+        <div id="messageBox" class="message-box"></div>
     </div>
 </div>
 
 <script>
+    function showMessage(message, isSuccess) {
+        const messageBox = document.getElementById("messageBox");
+        messageBox.textContent = message;
+        messageBox.className = isSuccess
+            ? "message-box message-success"
+            : "message-box message-error";
+    }
+
     async function loadAsset() {
         const assetId = document.getElementById("assetId").value;
 
@@ -152,17 +179,18 @@
         const description = document.getElementById("description").value.trim();
         const quantityValue = document.getElementById("quantity").value;
         const quantity = parseInt(quantityValue);
-        const messageBox = document.getElementById("messageBox");
 
-        messageBox.innerHTML = "";
+        const messageBox = document.getElementById("messageBox");
+        messageBox.className = "message-box";
+        messageBox.textContent = "";
 
         if (!itemName) {
-            messageBox.innerHTML = '<p class="update-error">Asset name is required.</p>';
+            showMessage("Asset name is required.", false);
             return;
         }
 
         if (isNaN(quantity) || quantity < 0) {
-            messageBox.innerHTML = '<p class="update-error">Quantity must be 0 or greater.</p>';
+            showMessage("Quantity must be 0 or greater.", false);
             return;
         }
 
@@ -198,11 +226,11 @@
             } catch {
             }
 
-            messageBox.innerHTML = `<p class="update-error">${errorText}</p>`;
+            showMessage(errorText, false);
             return;
         }
 
-        messageBox.innerHTML = '<p class="update-success">Asset updated successfully.</p>';
+        showMessage("Asset updated successfully.", true);
 
         setTimeout(() => {
             window.location.href = "/Item/Index";

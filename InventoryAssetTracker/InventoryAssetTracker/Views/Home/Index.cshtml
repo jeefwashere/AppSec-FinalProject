@@ -60,8 +60,20 @@
     </p>
 
     <div class="home-actions">
-        <a asp-controller="Account" asp-action="Login" class="home-button">Login</a>
-        <a asp-controller="Account" asp-action="Register" class="home-button">Register</a>
-        <a asp-controller="Item" asp-action="Index" class="home-button">View Assets</a>
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <a asp-controller="Item" asp-action="Index" class="home-button">View Assets</a>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-controller="Admin" asp-action="Index" class="home-button">Admin Dashboard</a>
+            }
+        }
+        else
+        {
+            <a asp-controller="Account" asp-action="Login" class="home-button">Login</a>
+            <a asp-controller="Account" asp-action="Register" class="home-button">Register</a>
+            <a asp-controller="Item" asp-action="Index" class="home-button">View Assets</a>
+        }
     </div>
 </div>

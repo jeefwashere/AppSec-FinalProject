@@ -45,6 +45,13 @@ namespace InventoryAssetTracker.Api
                 return BadRequest(ModelState);
             }
 
+            string? adminIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!int.TryParse(adminIdClaim, out int adminId))
+            {
+                return Unauthorized(new { message = "Invalid session." });
+            }
+
             User? user = await userContext.Users.FirstOrDefaultAsync(u => u.UserId == id);
 
             if (user == null)
@@ -70,6 +77,12 @@ namespace InventoryAssetTracker.Api
 
             user.Username = update.Username;
             user.Email = update.Email;
+
+            if (adminId == id && user.Role != update.Role)
+            {
+                return BadRequest(new { message = "You cannot change your own role." });
+            }
+
             user.Role = update.Role;
 
             await userContext.SaveChangesAsync();
@@ -81,6 +94,18 @@ namespace InventoryAssetTracker.Api
         [HttpDelete("users/{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
+            string? adminIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!int.TryParse(adminIdClaim, out int adminId))
+            {
+                return Unauthorized(new { message = "Invalid session." });
+            }
+
+            if (adminId == id)
+            {
+                return BadRequest(new { message = "You cannot delete your own account." });
+            }
+
             User? user = await userContext.Users
                 .Include(u => u.Assets)
                 .Include(u => u.UploadRecords)
