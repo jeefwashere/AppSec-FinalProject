@@ -41,24 +41,24 @@
         display: inline-block;
     }
 
-    .add-button:hover,
-    .action-button:hover {
-        background-color: #357bd8;
-        color: white;
-    }
+        .add-button:hover,
+        .action-button:hover {
+            background-color: #357bd8;
+            color: white;
+        }
 
-    .add-button:active,
-    .action-button:active {
-        transform: translateY(1px);
-    }
+        .add-button:active,
+        .action-button:active {
+            transform: translateY(1px);
+        }
 
     .delete-button {
         background: #dc3545;
     }
 
-    .delete-button:hover {
-        background: #bb2d3b;
-    }
+        .delete-button:hover {
+            background: #bb2d3b;
+        }
 
     .search-box {
         margin-bottom: 20px;
@@ -74,11 +74,11 @@
         box-sizing: border-box;
     }
 
-    .search-input:focus {
-        outline: none;
-        border-color: #4a90e2;
-        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
-    }
+        .search-input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+        }
 
     .search-button {
         padding: 10px 18px;
@@ -93,13 +93,13 @@
         transition: background-color 0.2s ease, transform 0.1s ease;
     }
 
-    .search-button:hover {
-        background-color: #357bd8;
-    }
+        .search-button:hover {
+            background-color: #357bd8;
+        }
 
-    .search-button:active {
-        transform: translateY(1px);
-    }
+        .search-button:active {
+            transform: translateY(1px);
+        }
 
     .asset-table-wrapper {
         background: white;
@@ -114,24 +114,24 @@
         background: white;
     }
 
-    .asset-table th,
-    .asset-table td {
-        padding: 16px 14px;
-        border-bottom: 1px solid #e5e7eb;
-        text-align: left;
-        vertical-align: middle;
-    }
+        .asset-table th,
+        .asset-table td {
+            padding: 16px 14px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+            vertical-align: middle;
+        }
 
-    .asset-table th {
-        background-color: #f8fafc;
-        color: #374151;
-        font-size: 15px;
-        font-weight: 700;
-    }
+        .asset-table th {
+            background-color: #f8fafc;
+            color: #374151;
+            font-size: 15px;
+            font-weight: 700;
+        }
 
-    .asset-table tr:last-child td {
-        border-bottom: none;
-    }
+        .asset-table tr:last-child td {
+            border-bottom: none;
+        }
 
     .action-wrap {
         display: flex;
@@ -206,6 +206,12 @@
         .danger-button:hover {
             background: #bb2d3b;
         }
+
+    .action-button:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+    }
 </style>
 
 <div class="asset-page">
@@ -256,6 +262,7 @@
 <script>
     let pendingDeleteAssetId = null;
     let pendingDeleteAssetName = "";
+    let isDeleting = false;
 
     function showMessage(message, isSuccess) {
         const box = document.getElementById("statusMessage");
@@ -269,6 +276,10 @@
     }
 
     function openDeleteModal(assetId, assetName) {
+        if (isDeleting) {
+            return;
+        }
+
         pendingDeleteAssetId = assetId;
         pendingDeleteAssetName = assetName;
 
@@ -276,12 +287,18 @@
         text.textContent = `Are you sure you want to delete asset "${assetName}"? This action cannot be undone.`;
 
         const confirmButton = document.getElementById("confirmDeleteButton");
+        confirmButton.disabled = false;
+        confirmButton.textContent = "Delete";
         confirmButton.onclick = confirmDeleteAsset;
 
         document.getElementById("deleteConfirmModal").style.display = "flex";
     }
 
     function closeDeleteModal() {
+        if (isDeleting) {
+            return;
+        }
+
         pendingDeleteAssetId = null;
         pendingDeleteAssetName = "";
         document.getElementById("deleteConfirmModal").style.display = "none";
@@ -333,42 +350,56 @@
             const row = document.createElement("tr");
 
             row.innerHTML = `
-                    <td>${asset.assetName ?? ""}</td>
-                    <td>${asset.description ?? ""}</td>
-                    <td>${asset.quantity ?? 0}</td>
-                    <td>
-                        <div class="action-wrap">
-                            <a href="/Item/Details?id=${asset.assetId}" class="action-button">Details</a>
-                            <a href="/Item/Update?id=${asset.assetId}" class="action-button">Update</a>
-                            <button type="button" class="action-button delete-button"
-                                onclick="openDeleteModal(${asset.assetId}, '${safeAssetName}')">Delete</button>
-                        </div>
-                    </td>
-                `;
+                        <td>${asset.assetName ?? ""}</td>
+                        <td>${asset.description ?? ""}</td>
+                        <td>${asset.quantity ?? 0}</td>
+                        <td>
+                            <div class="action-wrap">
+                                <a href="/Item/Details?id=${asset.assetId}" class="action-button">Details</a>
+                                <a href="/Item/Update?id=${asset.assetId}" class="action-button">Update</a>
+                                <button type="button" class="action-button delete-button"
+                                    onclick="openDeleteModal(${asset.assetId}, '${safeAssetName}')">Delete</button>
+                            </div>
+                        </td>
+                    `;
 
             body.appendChild(row);
         });
     }
 
     async function confirmDeleteAsset() {
-        if (pendingDeleteAssetId === null) {
+        if (pendingDeleteAssetId === null || isDeleting) {
             return;
         }
 
-        const response = await fetch("/api/itemapi/" + pendingDeleteAssetId, {
-            method: "DELETE",
-            credentials: "same-origin"
-        });
+        const confirmButton = document.getElementById("confirmDeleteButton");
+        isDeleting = true;
+        confirmButton.disabled = true;
+        confirmButton.textContent = "Deleting...";
 
-        closeDeleteModal();
+        try {
+            const response = await fetch("/api/itemapi/" + pendingDeleteAssetId, {
+                method: "DELETE",
+                credentials: "same-origin"
+            });
 
-        if (!response.ok) {
-            showMessage("Failed to delete asset.", false);
-            return;
+            if (!response.ok) {
+                showMessage("Failed to delete asset.", false);
+                return;
+            }
+
+            const deletedAssetName = pendingDeleteAssetName;
+            pendingDeleteAssetId = null;
+            pendingDeleteAssetName = "";
+            document.getElementById("deleteConfirmModal").style.display = "none";
+
+            showMessage(`Asset "${deletedAssetName}" was deleted successfully.`, true);
+            await loadAssets();
+        } finally {
+            isDeleting = false;
+            confirmButton.disabled = false;
+            confirmButton.textContent = "Delete";
         }
-
-        showMessage(`Asset "${pendingDeleteAssetName}" was deleted successfully.`, true);
-        loadAssets();
     }
 
     window.onload = loadAssets;

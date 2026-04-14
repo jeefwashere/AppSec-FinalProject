@@ -54,11 +54,11 @@
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .update-input:focus {
-        outline: none;
-        border-color: #4a90e2;
-        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
-    }
+        .update-input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+        }
 
     .update-actions {
         margin-top: 20px;
@@ -86,11 +86,17 @@
         transition: background-color 0.2s ease;
     }
 
-    .update-button:hover,
-    .back-button:hover {
-        background-color: #357bd8;
-        color: white;
-    }
+        .update-button:hover,
+        .back-button:hover {
+            background-color: #357bd8;
+            color: white;
+        }
+
+        .update-button:disabled {
+            background-color: #93b9e8;
+            border-color: #93b9e8;
+            cursor: not-allowed;
+        }
 
     .message-box {
         margin-top: 16px;
@@ -136,7 +142,7 @@
         </div>
 
         <div class="update-actions">
-            <button type="button" class="update-button" onclick="updateAsset()">Update Asset</button>
+            <button type="button" id="updateAssetButton" class="update-button" onclick="updateAsset()">Update Asset</button>
             <a asp-action="Index" asp-controller="Item" class="back-button">Back</a>
         </div>
 
@@ -145,6 +151,8 @@
 </div>
 
 <script>
+    let isUpdating = false;
+
     function showMessage(message, isSuccess) {
         const messageBox = document.getElementById("messageBox");
         messageBox.textContent = message;
@@ -179,6 +187,11 @@
     }
 
     async function updateAsset() {
+        if (isUpdating) {
+            return;
+        }
+
+        const updateButton = document.getElementById("updateAssetButton");
         const assetId = parseInt(document.getElementById("assetId").value);
         const itemName = document.getElementById("itemName").value.trim();
         const description = document.getElementById("description").value.trim();
@@ -199,6 +212,10 @@
             return;
         }
 
+        isUpdating = true;
+        updateButton.disabled = true;
+        updateButton.textContent = "Updating...";
+
         const requestBody = {
             itemID: assetId,
             itemName: itemName,
@@ -206,40 +223,51 @@
             quantity: quantity
         };
 
-        const response = await fetch("/api/itemapi/" + assetId, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "same-origin",
-            body: JSON.stringify(requestBody)
-        });
+        let shouldKeepDisabled = false;
 
-        if (!response.ok) {
-            if (response.status === 401 || response.status === 403) {
-                window.location.href = "/Account/Login";
+        try {
+            const response = await fetch("/api/itemapi/" + assetId, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "same-origin",
+                body: JSON.stringify(requestBody)
+            });
+
+            if (!response.ok) {
+                if (response.status === 401 || response.status === 403) {
+                    window.location.href = "/Account/Login";
+                    return;
+                }
+
+                let errorText = "Failed to update asset.";
+
+                try {
+                    const errorData = await response.json();
+                    if (errorData.message) {
+                        errorText = errorData.message;
+                    }
+                } catch {
+                }
+
+                showMessage(errorText, false);
                 return;
             }
 
-            let errorText = "Failed to update asset.";
+            showMessage("Asset updated successfully.", true);
+            shouldKeepDisabled = true;
 
-            try {
-                const errorData = await response.json();
-                if (errorData.message) {
-                    errorText = errorData.message;
-                }
-            } catch {
+            setTimeout(() => {
+                window.location.href = "/Item/Index";
+            }, 700);
+        } finally {
+            if (!shouldKeepDisabled) {
+                isUpdating = false;
+                updateButton.disabled = false;
+                updateButton.textContent = "Update Asset";
             }
-
-            showMessage(errorText, false);
-            return;
         }
-
-        showMessage("Asset updated successfully.", true);
-
-        setTimeout(() => {
-            window.location.href = "/Item/Index";
-        }, 700);
     }
 
     window.onload = loadAsset;
