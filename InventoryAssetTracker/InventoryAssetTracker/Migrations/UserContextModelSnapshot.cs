@@ -80,6 +80,34 @@ namespace InventoryAssetTracker.Migrations
                     b.ToTable("AuditLogs");
                 });
 
+            modelBuilder.Entity("InventoryAssetTracker.Models.Log", b =>
+                {
+                    b.Property<int>("LogId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LogId"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Details")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LogId");
+
+                    b.ToTable("Logs");
+                });
+
             modelBuilder.Entity("InventoryAssetTracker.Models.Upload", b =>
                 {
                     b.Property<int>("UploadId")

@@ -57,14 +57,13 @@ namespace InventoryAssetTracker.Api
 		[HttpGet("logs")]
 		public async Task<ActionResult<List<AdminLogResponseDTO>>> GetLogs()
 		{
-			List<AdminLogResponseDTO> logs = await userContext.AuditLogs
-				.Include(l => l.User)
+			List<AdminLogResponseDTO> logs = await userContext.Logs
 				.OrderByDescending(l => l.CreatedAt)
 				.Select(l => new AdminLogResponseDTO
 				{
 					Action = l.Action,
 					Details = l.Details,
-					Username = l.User != null ? l.User.Username : "Unknown",
+					Username = l.Username,
 					CreatedAt = l.CreatedAt
 				})
 				.ToListAsync();

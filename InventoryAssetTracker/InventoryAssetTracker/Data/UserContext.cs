@@ -15,6 +15,7 @@ namespace InventoryAssetTracker.Data
         public DbSet<Asset> Assets { get; set; }
         public DbSet<Upload> UploadRecords { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
+        public DbSet<Log> Logs { get; set; }
 
     }
 }
