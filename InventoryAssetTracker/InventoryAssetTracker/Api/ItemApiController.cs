@@ -24,11 +24,11 @@ namespace InventoryAssetTracker.Api
 		{
 			this.userContext = userContext;
 		}
-		/// <summary>
-		/// get all items for current user, if the user is not authorized, return unauthorized with a message, if the user is authorized, return ok with the list of items
-		/// </summary>
-		/// <returns></returns>
-		[HttpGet]
+        /// <summary>
+        /// Get all items for current user, if the user is not authorized, return unauthorized with a message, if the user is authorized, return ok with the list of items
+        /// </summary>
+        /// <returns>A status code containing a message</returns>
+        [HttpGet]
 		public async Task<IActionResult> GetMyItems()
 		{
 			int? userID = GetCurrentUserID();
@@ -38,7 +38,8 @@ namespace InventoryAssetTracker.Api
 				await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 				return Unauthorized(new { message = "Invalid session." });
 			}
-//get the items for current user by userId search inside from the database, then return the list of items
+			
+			// Get the items for current user by userId search inside from the database, then return the list of items
 			List<AssetResponseDTO> selectedAssets = await userContext.Assets
 				.Where(asset => asset.OwnerId == userID.Value)
 				.Select(asset => new AssetResponseDTO
@@ -53,29 +54,31 @@ namespace InventoryAssetTracker.Api
 
 			return Ok(selectedAssets);
 		}
-	/// <summary>
-	/// get the item by id, if the user is not authorized, return unauthorized with a message
-	/// </summary>
-	/// <param name="id"></param>
-	/// <returns></returns>
-		[HttpGet("{id}")]
+        /// <summary>
+        /// Get the item by id, if the user is not authorized, return unauthorized with a message
+        /// </summary>
+        /// <param name="id">Asset ID</param>
+        /// <returns>A status code containing a message</returns>
+        [HttpGet("{id}")]
 		public async Task<IActionResult> GetById(int id)
 		{
 			int? userID = GetCurrentUserID();
 
 			if (userID == null)
-			{// id have wrong format or session is invalid, then sign out and return unauthorized with a message
+			{
+				// ID have wrong format or session is invalid, then sign out and return unauthorized with a message
 				await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 				return Unauthorized(new { message = "Invalid session." });
 			}
-//get all id staff
+
+			// Get all assets bound to User ID
 			Asset? asset = await userContext.Assets.FindAsync(id);
 
 			if (asset == null)
 			{
 				return NotFound(new { message = "Item not found." });
 			}
-// meas that you shoukd't have 
+			// meas that you shoukd't have 
 			if (asset.OwnerId != userID.Value)
 			{
 				return Forbid();
@@ -90,10 +93,10 @@ namespace InventoryAssetTracker.Api
 			});
 		}
 		/// <summary>
-		/// create an asset
+		/// Creates an asset
 		/// </summary>
-		/// <param name="add"></param>
-		/// <returns></returns>
+		/// <param name="add">Asset information bound to asset creation DTO</param>
+		/// <returns>A status code containing a message</returns>
 		[HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateAssetRequestDTO add)
         {
@@ -103,13 +106,15 @@ namespace InventoryAssetTracker.Api
 			}
 
 			int? userID = GetCurrentUserID();
-			//wrong user
+			
+			// Wrong user
 			if (userID == null)
 			{
 				await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 				return Unauthorized(new { message = "Invalid session." });
 			}
-			// found userid 
+
+			// Found userid 
 			User? currentUser = await userContext.Users.FindAsync(userID.Value);
 
 			if (currentUser == null)
@@ -117,12 +122,14 @@ namespace InventoryAssetTracker.Api
 				await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 				return Unauthorized(new { message = "User not found." });
 			}
-			// quantity should be non-negative
+
+			// Quantity should be non-negative
 			if (add.Quantity < 0)
 			{
 				return BadRequest(new { message = "Item quantity cannot be less than 0." });
 			}
-			// new asset create
+
+			// New asset create
 			Asset newAsset = new Asset()
 			{
 				Name = add.AssetName,
@@ -131,7 +138,8 @@ namespace InventoryAssetTracker.Api
 				Owner = currentUser,
 				OwnerId = currentUser.UserId
 			};
-///save to database
+			
+			// Save to database
 			await userContext.Assets.AddAsync(newAsset);
 			await userContext.SaveChangesAsync();
 

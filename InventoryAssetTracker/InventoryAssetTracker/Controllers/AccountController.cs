@@ -23,6 +23,11 @@ namespace InventoryAssetTracker.Controllers
             this.userContext = userContext;
         }
 
+        /// <summary>
+        /// Serves the login view
+        /// </summary>
+        /// <param name="returnUrl">The URL the user originated from</param>
+        /// <returns>Returns a login view</returns>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Login(string? returnUrl = null)
@@ -40,6 +45,11 @@ namespace InventoryAssetTracker.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Takes a login view model; Authenticates and logs in user if valid
+        /// </summary>
+        /// <param name="model">Login view model containing relevant data needed to login</param>
+        /// <returns>Returns a view depending if login succeeds</returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -100,6 +110,10 @@ namespace InventoryAssetTracker.Controllers
             return RedirectToAction("Index", "Item");
         }
 
+        /// <summary>
+        /// Serves a register view
+        /// </summary>
+        /// <returns>Register view or takes user back to item screen if logged in already</returns>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Register()
@@ -112,6 +126,11 @@ namespace InventoryAssetTracker.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Registers the user
+        /// </summary>
+        /// <param name="model">Contains all relevant registration data for user</param>
+        /// <returns>A view depending on the registration status</returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -143,6 +162,10 @@ namespace InventoryAssetTracker.Controllers
             return RedirectToAction("Login", "Account");
         }
 
+        /// <summary>
+        /// Serves the profile view
+        /// </summary>
+        /// <returns>A view depending on if the user is logged in or not</returns>
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> Profile()
@@ -172,6 +195,10 @@ namespace InventoryAssetTracker.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Signs user out
+        /// </summary>
+        /// <returns>A redirect view to the home page</returns>
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -181,6 +208,10 @@ namespace InventoryAssetTracker.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        /// <summary>
+        /// Access denied page
+        /// </summary>
+        /// <returns>Access denied page</returns>
         [HttpGet]
         public IActionResult AccessDenied()
         {

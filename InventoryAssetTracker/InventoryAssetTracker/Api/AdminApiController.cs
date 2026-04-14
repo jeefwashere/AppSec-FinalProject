@@ -20,6 +20,10 @@ namespace InventoryAssetTracker.Api
             this.userContext = userContext;
         }
 
+        /// <summary>
+        /// Gets the users from the database
+        /// </summary>
+        /// <returns>A list of users bound to a DTO</returns>
         [HttpGet("users")]
         public async Task<ActionResult<List<AdminUserResponseDTO>>> GetUsers()
         {
@@ -37,6 +41,12 @@ namespace InventoryAssetTracker.Api
             return Ok(users);
         }
 
+        /// <summary>
+        /// Updates user detail
+        /// </summary>
+        /// <param name="id">User ID</param>
+        /// <param name="update">Update DTO containing update info</param>
+        /// <returns></returns>
         [HttpPut("users/{id}")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] AdminUpdateUserDTO update)
         {
@@ -90,6 +100,11 @@ namespace InventoryAssetTracker.Api
             return Ok(new { message = "User updated successfully." });
         }
 
+        /// <summary>
+        /// Deletes the user from the database
+        /// </summary>
+        /// <param name="id">User ID</param>
+        /// <returns>A response new message</returns>
         [HttpDelete("users/{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
@@ -136,6 +151,10 @@ namespace InventoryAssetTracker.Api
             return Ok(new { message = "User deleted successfully." });
         }
 
+        /// <summary>
+        /// Gets the assets from the database
+        /// </summary>
+        /// <returns>A list of assets bound to the asset DTO for the admin</returns>
         [HttpGet("assets")]
         public async Task<ActionResult<List<AdminAssetResponseDTO>>> GetAssets()
         {
@@ -155,6 +174,12 @@ namespace InventoryAssetTracker.Api
             return Ok(assets);
         }
 
+        /// <summary>
+        /// Updates a user's asset
+        /// </summary>
+        /// <param name="id">Asset ID</param>
+        /// <param name="update">Update DTO containing new information for updating an asset</param>
+        /// <returns>Returns an HTTP response with a message</returns>
         [HttpPut("assets/{id}")]
         public async Task<IActionResult> UpdateAsset(int id, [FromBody] AdminUpdateAssetDTO update)
         {
@@ -179,6 +204,11 @@ namespace InventoryAssetTracker.Api
             return Ok(new { message = "Asset updated successfully." });
         }
 
+        /// <summary>
+        /// Deletes an asset in the database
+        /// </summary>
+        /// <param name="id">Asset ID</param>
+        /// <returns>Returns an HTTP response with a message</returns>
         [HttpDelete("assets/{id}")]
         public async Task<IActionResult> DeleteAsset(int id)
         {
@@ -195,6 +225,10 @@ namespace InventoryAssetTracker.Api
             return Ok(new { message = "Asset deleted successfully." });
         }
 
+        /// <summary>
+        /// Gets the logs in the database
+        /// </summary>
+        /// <returns>List of logs bound to a admin log DTO</returns>
         [HttpGet("logs")]
         public async Task<ActionResult<List<AdminLogResponseDTO>>> GetLogs()
         {

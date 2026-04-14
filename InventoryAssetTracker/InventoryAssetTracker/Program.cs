@@ -7,14 +7,20 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container. automaticlly
 builder.Services.AddScoped<ActionLoggingFilter>();
+
+// Binds the logger to the program
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.AddService<ActionLoggingFilter>();
 });
+
 builder.Services.AddHttpClient();
+
+// Binds the ORM db builder to the application
 builder.Services.AddDbContext<UserContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Sets authentication for application using Cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {

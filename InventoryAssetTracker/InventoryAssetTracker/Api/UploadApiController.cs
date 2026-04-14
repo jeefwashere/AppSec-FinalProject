@@ -23,13 +23,17 @@ namespace InventoryAssetTracker.Api
             this.userContext = userContext;
             this.environment = environment;
         }
-
+        /// <summary>
+        /// Uploads a profile photo for a user profile
+        /// </summary>
+        /// <param name="file">The photo used</param>
+        /// <returns>A status code containing a message</returns>
         [HttpPost("profile-photo")]
         public async Task<IActionResult> UploadProfilePhoto(IFormFile file)
         {
             int? userID = GetCurrentUserID();
 
-            // 🔥 CHANGE: removed forced sign-out (not needed)
+            // removed forced sign-out (not needed)
             if (userID == null)
             {
                 return Unauthorized(new { message = "Invalid session." });
@@ -123,6 +127,10 @@ namespace InventoryAssetTracker.Api
             });
         }
 
+        /// <summary>
+        /// Gets the current user's ID
+        /// </summary>
+        /// <returns>Returns the user ID</returns>
         private int? GetCurrentUserID()
         {
             string? userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);

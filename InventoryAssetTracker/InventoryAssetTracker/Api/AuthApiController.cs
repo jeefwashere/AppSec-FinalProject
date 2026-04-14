@@ -43,7 +43,8 @@ namespace InventoryAssetTracker.Api
 					Message = "Invalid login request."
 				});
 			}
-//found the corresponding user in database by username, if not found, return unauthorized with a message
+			
+			// Found the corresponding user in database by username, if not found, return unauthorized with a message
 			User? user = await userContext.Users.FirstOrDefaultAsync(u => u.Username == login.Username);
 
 			if (user == null)
@@ -54,7 +55,7 @@ namespace InventoryAssetTracker.Api
 					Message = "Invalid user."
 				});
 			}
-			//varify login by hash password
+			// Verify login by hash password
 			PasswordHasher<User> hasher = new PasswordHasher<User>();
 			PasswordVerificationResult passwordCheck = hasher.VerifyHashedPassword(user, user.PasswordHash, login.Password);
 
@@ -66,7 +67,7 @@ namespace InventoryAssetTracker.Api
 					Message = "Invalid password."
 				});
 			}
-			// this was to store the cilent infomation like username, email, role and user id in claim, then use cookie to store the claim for authentication
+			// This was to store the cilent infomation like username, email, role and user id in claim, then use cookie to store the claim for authentication
 			List<Claim> claims = new List<Claim>
 			{
 				new Claim(ClaimTypes.Name, user.Username),
@@ -74,15 +75,18 @@ namespace InventoryAssetTracker.Api
 				new Claim(ClaimTypes.Email, user.Email),
 				new Claim(ClaimTypes.Role, user.Role)
 			};
-//add an cilent identity
+
+			// Add an client identity
 			ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-//set the cookie authentication properties, like expiration time for 30
+
+			// Set the cookie authentication properties, like expiration time for 30
 			AuthenticationProperties authProperties = new AuthenticationProperties
 			{
 				IsPersistent = false,
 				ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
 			};
-			//write your claim into cookie for authentication
+
+			// Write your claim into cookie for authentication
 			await HttpContext.SignInAsync(
 				CookieAuthenticationDefaults.AuthenticationScheme,
 				new ClaimsPrincipal(claimsIdentity),
@@ -97,11 +101,12 @@ namespace InventoryAssetTracker.Api
 				RedirectUrl = redirectUrl
 			});
 		}
-//register an account
+		// Register an account
 		[AllowAnonymous]
 		[HttpPost("register")]
 		public async Task<IActionResult> Register([FromBody] RegisterRequestDTO register)
-		{//login in infomation validation, if not valid, return bad request with a message
+		{
+			// Login in infomation validation, if not valid, return bad request with a message
 			if (!ModelState.IsValid)
 			{
 				return BadRequest(new AuthResponseDTO
@@ -110,7 +115,8 @@ namespace InventoryAssetTracker.Api
 					Message = "Invalid registration request."
 				});
 			}
-// check is it exist
+
+			// Check is it exist
 			bool checkUsernameExists = await userContext.Users.AnyAsync(u => u.Username == register.Username);
 
 			if (checkUsernameExists)
@@ -132,7 +138,8 @@ namespace InventoryAssetTracker.Api
 					Message = "Email already exists."
 				});
 			}
-//create a new user and hash the password, then save the user into database
+			
+			// Create a new user and hash the password, then save the user into database
 			User user = new User
 			{
 				Username = register.Username,
@@ -144,7 +151,8 @@ namespace InventoryAssetTracker.Api
 			string hash = hasher.HashPassword(user, register.Password);
 
 			user.PasswordHash = hash;
-//add the new info
+			
+			// Add the new info
 			await userContext.Users.AddAsync(user);
 			await userContext.SaveChangesAsync();//save change
 
@@ -155,10 +163,10 @@ namespace InventoryAssetTracker.Api
 				RedirectUrl = "/Account/Login"
 			});
 		}
-/// <summary>
-/// log out logic, it will clear the cookie for authentication and return ok with a message and redirect url
-/// </summary>
-/// <returns></returns>
+		/// <summary>
+		/// log out logic, it will clear the cookie for authentication and return ok with a message and redirect url
+		/// </summary>
+		/// <returns>Returns a status code containing a message</returns>
 		[Authorize]
 		[HttpPost("logout")]
 		public async Task<IActionResult> Logout()
