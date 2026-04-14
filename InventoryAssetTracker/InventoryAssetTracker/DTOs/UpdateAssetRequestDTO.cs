@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿// References: https://medium.com/@mariorodrguezgalicia/what-is-a-dto-in-spring-boot-and-why-should-you-use-it-97651506e516 
+using System.ComponentModel.DataAnnotations;
 
 namespace InventoryAssetTracker.DTOs
 {

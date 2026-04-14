@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication;
 using System.Text.RegularExpressions;
 using InventoryAssetTracker.Controllers;
+//References: https://www.w3tutorials.net/blog/asp-net-core-simplest-possible-forms-authentication/
 
 namespace InventoryAssetTracker.Api
 {
