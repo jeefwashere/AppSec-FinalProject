@@ -11,20 +11,27 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
+        margin-bottom: 24px;
     }
 
     .admin-title {
         margin: 0;
-        color: #333;
+        color: #1f2937;
+        font-size: 2rem;
+        font-weight: 700;
     }
 
     .back-button {
-        padding: 10px 16px;
+        padding: 10px 18px;
         background: #4a90e2;
         color: white;
         text-decoration: none;
-        border-radius: 6px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: 0.2s;
     }
 
         .back-button:hover {
@@ -32,27 +39,40 @@
             color: white;
         }
 
+    .admin-table-wrapper {
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
     .admin-table {
         width: 100%;
         border-collapse: collapse;
-        background: white;
     }
 
         .admin-table th,
         .admin-table td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
+            padding: 16px 14px;
+            border-bottom: 1px solid #e5e7eb;
             text-align: left;
             vertical-align: top;
         }
 
         .admin-table th {
-            background-color: #f5f6f8;
+            background-color: #f8fafc;
+            color: #374151;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .admin-table tr:last-child td {
+            border-bottom: none;
         }
 
     .log-action {
-        font-weight: bold;
-        color: #333;
+        font-weight: 700;
+        color: #1f2937;
     }
 
     .log-user {
@@ -61,8 +81,14 @@
     }
 
     .log-time {
-        color: #666;
+        color: #6b7280;
         white-space: nowrap;
+    }
+
+    .empty-row {
+        color: #6b7280;
+        text-align: center;
+        padding: 24px;
     }
 </style>
 
@@ -76,17 +102,19 @@
         </a>
     </div>
 
-    <table class="admin-table">
-        <thead>
-            <tr>
-                <th width="180">Action</th>
-                <th width="320">Details</th>
-                <th width="180">User</th>
-                <th width="180">Created At</th>
-            </tr>
-        </thead>
-        <tbody id="logsTableBody"></tbody>
-    </table>
+    <div class="admin-table-wrapper">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th width="180">Action</th>
+                    <th width="320">Details</th>
+                    <th width="180">User</th>
+                    <th width="180">Created At</th>
+                </tr>
+            </thead>
+            <tbody id="logsTableBody"></tbody>
+        </table>
+    </div>
 
 </div>
 
@@ -96,18 +124,23 @@
         body.innerHTML = "";
 
         const response = await fetch("/api/admin/logs");
+
         if (!response.ok) {
-            body.innerHTML = `<tr><td colspan="4">Failed to load logs.</td></tr>`;
+            body.innerHTML = `<tr><td colspan="4" class="empty-row">Failed to load logs.</td></tr>`;
             return;
         }
 
         const logs = await response.json();
 
+        if (logs.length === 0) {
+            body.innerHTML = `<tr><td colspan="4" class="empty-row">No logs found.</td></tr>`;
+            return;
+        }
+
         logs.forEach(log => {
             const createdAt = new Date(log.createdAt).toLocaleString();
 
             const row = document.createElement("tr");
-
             row.innerHTML = `
                     <td class="log-action">${log.action}</td>
                     <td>${log.details}</td>

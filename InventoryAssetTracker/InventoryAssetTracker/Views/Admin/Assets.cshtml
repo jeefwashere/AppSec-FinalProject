@@ -11,43 +11,101 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
+        margin-bottom: 24px;
     }
 
     .admin-title {
         margin: 0;
-        color: #333;
+        color: #1f2937;
+        font-size: 2rem;
+        font-weight: 700;
     }
 
-    .back-button {
-        padding: 10px 16px;
+    .back-button,
+    .action-button {
+        padding: 10px 18px;
         background: #4a90e2;
         color: white;
         text-decoration: none;
-        border-radius: 6px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: 0.2s;
     }
 
-        .back-button:hover {
+        .back-button:hover,
+        .action-button:hover {
             background-color: #357bd8;
             color: white;
         }
 
+    .delete-button {
+        background: #dc3545;
+    }
+
+        .delete-button:hover {
+            background: #bb2d3b;
+        }
+
+    .admin-table-wrapper {
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
     .admin-table {
         width: 100%;
         border-collapse: collapse;
-        background: white;
     }
 
         .admin-table th,
         .admin-table td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
+            padding: 16px 14px;
+            border-bottom: 1px solid #e5e7eb;
             text-align: left;
         }
 
         .admin-table th {
-            background-color: #f5f6f8;
+            background-color: #f8fafc;
+            font-weight: 700;
         }
+
+        .admin-table tr:last-child td {
+            border-bottom: none;
+        }
+
+    .modern-input {
+        width: 100%;
+        max-width: 240px;
+        padding: 10px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        transition: 0.2s;
+    }
+
+        .modern-input:focus {
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74,144,226,0.15);
+        }
+
+    .actions-cell {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .status-message {
+        margin-top: 20px;
+        padding: 14px;
+        border-radius: 10px;
+        display: none;
+        font-weight: 500;
+    }
 </style>
 
 <div class="admin-page">
@@ -60,29 +118,46 @@
         </a>
     </div>
 
-    <table class="admin-table">
-        <thead>
-            <tr>
-                <th width="120">Asset ID</th>
-                <th width="200">Asset Name</th>
-                <th width="300">Description</th>
-                <th width="120">Quantity</th>
-                <th width="200">Owner</th>
-            </tr>
-        </thead>
-        <tbody id="assetsTableBody"></tbody>
-    </table>
+    <div class="admin-table-wrapper">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Asset ID</th>
+                    <th>Asset Name</th>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Owner</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="assetsTableBody"></tbody>
+        </table>
+    </div>
+
+    <div id="statusMessage" class="status-message"></div>
 
 </div>
 
 <script>
+    function showMessage(message, isSuccess) {
+        const box = document.getElementById("statusMessage");
+        box.textContent = message;
+        box.style.display = "block";
+        box.style.backgroundColor = isSuccess ? "#e8f5e9" : "#fdecea";
+        box.style.color = isSuccess ? "#2e7d32" : "#b71c1c";
+        box.style.border = isSuccess
+            ? "1px solid #81c784"
+            : "1px solid #ef9a9a";
+    }
+
     async function loadAssets() {
         const body = document.getElementById("assetsTableBody");
         body.innerHTML = "";
 
         const response = await fetch("/api/admin/assets");
+
         if (!response.ok) {
-            body.innerHTML = `<tr><td colspan="5">Failed to load assets.</td></tr>`;
+            body.innerHTML = `<tr><td colspan="6">Failed to load assets.</td></tr>`;
             return;
         }
 
@@ -93,14 +168,54 @@
 
             row.innerHTML = `
                     <td>${asset.assetId}</td>
-                    <td>${asset.assetName}</td>
-                    <td>${asset.description}</td>
-                    <td>${asset.quantity}</td>
+                    <td><input class="modern-input" value="${asset.assetName}" id="assetName-${asset.assetId}" /></td>
+                    <td><input class="modern-input" value="${asset.description}" id="description-${asset.assetId}" /></td>
+                    <td><input class="modern-input" type="number" min="0" value="${asset.quantity}" id="quantity-${asset.assetId}" /></td>
                     <td>${asset.owner}</td>
+                    <td>
+                        <div class="actions-cell">
+                            <button class="action-button" onclick="updateAsset(${asset.assetId})">Save</button>
+                            <button class="action-button delete-button" onclick="deleteAsset(${asset.assetId})">Delete</button>
+                        </div>
+                    </td>
                 `;
 
             body.appendChild(row);
         });
+    }
+
+    async function updateAsset(assetId) {
+        const payload = {
+            assetName: document.getElementById(`assetName-${assetId}`).value,
+            description: document.getElementById(`description-${assetId}`).value,
+            quantity: parseInt(document.getElementById(`quantity-${assetId}`).value)
+        };
+
+        const response = await fetch(`/api/admin/assets/${assetId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+        showMessage(result.message || "Update finished.", response.ok);
+
+        if (response.ok) {
+            loadAssets();
+        }
+    }
+
+    async function deleteAsset(assetId) {
+        const response = await fetch(`/api/admin/assets/${assetId}`, {
+            method: "DELETE"
+        });
+
+        const result = await response.json();
+        showMessage(result.message || "Delete finished.", response.ok);
+
+        if (response.ok) {
+            loadAssets();
+        }
     }
 
     window.onload = loadAssets;
