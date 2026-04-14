@@ -34,6 +34,12 @@ namespace InventoryAssetTracker.Filters
             string username = context.HttpContext.User.Identity?.IsAuthenticated == true
                 ? context.HttpContext.User.FindFirstValue(ClaimTypes.Name) ?? "Unknown"
                 : "Anonymous";
+            string? userIdClaim = context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!int.TryParse(userIdClaim, out int userId))
+            {
+                return;
+            }
 
             int statusCode = context.HttpContext.Response.StatusCode;
             string actionName = $"{context.HttpContext.Request.Method} {actionDescriptor.ControllerName}.{actionDescriptor.ActionName}";
@@ -48,7 +54,8 @@ namespace InventoryAssetTracker.Filters
                 {
                     Action = actionName,
                     Details = details,
-                    Username = username
+                    Username = username,
+                    UserId = userId
                 };
 
                 userContext.Logs.Add(log);
