@@ -1,6 +1,5 @@
-
-📦 Inventory Asset Tracker
-📖 Overview
+ Inventory Asset Tracker
+ Overview
 
 The Inventory Asset Tracker is a secure client–server web application designed to help users manage and track assets such as equipment, devices, and other items.
 
@@ -25,7 +24,7 @@ Database Layer:
 SQL Server using Entity Framework Core
 Stores users and assets
 
-👉 The UI does not directly access the database, ensuring proper separation of concerns.
+ The UI does not directly access the database, ensuring proper separation of concerns.
 
 👥 User Roles
 
