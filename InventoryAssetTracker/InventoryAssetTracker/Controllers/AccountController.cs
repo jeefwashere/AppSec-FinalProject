@@ -1,4 +1,9 @@
-﻿using System.Security.Claims;
+﻿/*
+ * FILE : AccountController.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Handles account pages for login, register, profile, and logout.
+ */
+using System.Security.Claims;
 using InventoryAssetTracker.Data;
 using InventoryAssetTracker.DTOs;
 using InventoryAssetTracker.Models;
@@ -10,6 +15,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+
+// Referenecs: MVC Pattern https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-10.0&tabs=visual-studio
+//            Authorization and Authentication https://www.w3tutorials.net/blog/asp-net-core-simplest-possible-forms-authentication/
 namespace InventoryAssetTracker.Controllers
 {
     public class AccountController : Controller

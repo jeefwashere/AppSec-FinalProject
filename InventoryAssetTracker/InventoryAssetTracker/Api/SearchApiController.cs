@@ -1,4 +1,9 @@
-﻿using InventoryAssetTracker.Data;
+﻿/*
+ * FILE : SearchApiController.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Handles search requests for filtering and finding inventory items.
+ */
+using InventoryAssetTracker.Data;
 using InventoryAssetTracker.DTOs;
 using InventoryAssetTracker.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -8,6 +13,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+
+
+
+// Referenecs: MVC Pattern https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-10.0&tabs=visual-studio
+//            Authorization and Authentication https://www.w3tutorials.net/blog/asp-net-core-simplest-possible-forms-authentication/
 
 namespace InventoryAssetTracker.Api
 {

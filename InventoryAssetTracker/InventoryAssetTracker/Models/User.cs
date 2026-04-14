@@ -1,4 +1,9 @@
-﻿
+﻿/*
+ * FILE : User.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Defines the user model used for application accounts.
+ */
+﻿// Referenecs: MVC Pattern https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-10.0&tabs=visual-studio
 namespace InventoryAssetTracker.Models
 
 {

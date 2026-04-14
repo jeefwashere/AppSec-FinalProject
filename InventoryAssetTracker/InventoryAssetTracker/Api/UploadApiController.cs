@@ -1,4 +1,9 @@
-﻿using InventoryAssetTracker.Data;
+﻿/*
+ * FILE : UploadApiController.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Handles upload requests for saving and updating profile photos.
+ */
+using InventoryAssetTracker.Data;
 using InventoryAssetTracker.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
@@ -7,6 +12,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+
+// Referenecs: MVC Pattern https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-10.0&tabs=visual-studio
+//            Authorization and Authentication https://www.w3tutorials.net/blog/asp-net-core-simplest-possible-forms-authentication/
 
 namespace InventoryAssetTracker.Api
 {
@@ -33,7 +41,6 @@ namespace InventoryAssetTracker.Api
         {
             int? userID = GetCurrentUserID();
 
-            // removed forced sign-out (not needed)
             if (userID == null)
             {
                 return Unauthorized(new { message = "Invalid session." });

@@ -1,4 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿/*
+ * FILE : AdminUpdateUserDTO.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Stores admin user update data submitted from management forms.
+ */
+using System.ComponentModel.DataAnnotations;
 
 namespace InventoryAssetTracker.DTOs
 {

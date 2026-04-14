@@ -1,4 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿/*
+ * FILE : UpdateAssetViewModel.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Defines the update asset view model used for item pages.
+ */
+﻿// Referenecs: MVC Pattern https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-10.0&tabs=visual-studio
+using System.ComponentModel.DataAnnotations;
 
 namespace InventoryAssetTracker.ViewModels
 {
@@ -14,5 +20,4 @@ namespace InventoryAssetTracker.ViewModels
         public int Quantity { get; set; }
 	}
 }
-
 

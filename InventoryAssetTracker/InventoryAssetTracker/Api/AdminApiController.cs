@@ -1,4 +1,9 @@
-﻿using InventoryAssetTracker.Data;
+﻿/*
+ * FILE : AdminApiController.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Handles admin requests for managing users, assets, and system logs.
+ */
+using InventoryAssetTracker.Data;
 using InventoryAssetTracker.DTOs;
 using InventoryAssetTracker.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -6,6 +11,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
+
+// Referenecs: MVC Pattern https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-10.0&tabs=visual-studio
+//            Authorization and Authentication https://www.w3tutorials.net/blog/asp-net-core-simplest-possible-forms-authentication/
 namespace InventoryAssetTracker.Api
 {
     [Route("api/admin")]
@@ -14,7 +22,7 @@ namespace InventoryAssetTracker.Api
     public class AdminApiController : ControllerBase
     {
         private readonly UserContext userContext;
-
+		
         public AdminApiController(UserContext userContext)
         {
             this.userContext = userContext;
