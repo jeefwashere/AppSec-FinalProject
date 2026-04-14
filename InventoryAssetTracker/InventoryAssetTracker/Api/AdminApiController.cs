@@ -86,7 +86,6 @@ namespace InventoryAssetTracker.Api
             user.Role = update.Role;
 
             await userContext.SaveChangesAsync();
-            await AddAuditLog("ADMIN_UPDATED_USER", $"Admin updated user ID {user.UserId}.");
 
             return Ok(new { message = "User updated successfully." });
         }
@@ -109,7 +108,7 @@ namespace InventoryAssetTracker.Api
             User? user = await userContext.Users
                 .Include(u => u.Assets)
                 .Include(u => u.UploadRecords)
-                .Include(u => u.AuditLogs)
+                .Include(u => u.UserLogs)
                 .FirstOrDefaultAsync(u => u.UserId == id);
 
             if (user == null)
@@ -128,12 +127,11 @@ namespace InventoryAssetTracker.Api
 
             userContext.Assets.RemoveRange(user.Assets);
             userContext.UploadRecords.RemoveRange(user.UploadRecords);
-            userContext.AuditLogs.RemoveRange(user.AuditLogs);
+            userContext.Logs.RemoveRange(user.UserLogs);
             userContext.Users.Remove(user);
 
             await userContext.SaveChangesAsync();
 
-            await AddAuditLog("ADMIN_DELETED_USER", $"Admin deleted user ID {id}.");
 
             return Ok(new { message = "User deleted successfully." });
         }
@@ -177,7 +175,6 @@ namespace InventoryAssetTracker.Api
             asset.Quantity = update.Quantity;
 
             await userContext.SaveChangesAsync();
-            await AddAuditLog("ADMIN_UPDATED_ASSET", $"Admin updated asset ID {asset.AssetId}.");
 
             return Ok(new { message = "Asset updated successfully." });
         }
@@ -194,7 +191,6 @@ namespace InventoryAssetTracker.Api
 
             userContext.Assets.Remove(asset);
             await userContext.SaveChangesAsync();
-            await AddAuditLog("ADMIN_DELETED_ASSET", $"Admin deleted asset ID {id}.");
 
             return Ok(new { message = "Asset deleted successfully." });
         }
@@ -214,27 +210,6 @@ namespace InventoryAssetTracker.Api
                 .ToListAsync();
 
             return Ok(logs);
-        }
-
-        private async Task AddAuditLog(string action, string details)
-        {
-            string? adminIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (!int.TryParse(adminIdClaim, out int adminId))
-            {
-                return;
-            }
-
-            AuditLog log = new AuditLog
-            {
-                Action = action,
-                Details = details,
-                UserId = adminId,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            userContext.AuditLogs.Add(log);
-            await userContext.SaveChangesAsync();
         }
     }
 }
