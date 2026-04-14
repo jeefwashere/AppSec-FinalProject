@@ -2,7 +2,9 @@
  * FILE : ItemApiController.cs
  * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
  * DESCRIPTION : Handles inventory item requests for viewing, creating, updating, deleting.
- */
+ 
+// Referenecs: MVC Pattern https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-10.0&tabs=visual-studio
+//            Authorization and Authentication https://www.w3tutorials.net/blog/asp-net-core-simplest-possible-forms-authentication/*/
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
@@ -17,8 +19,6 @@ using Microsoft.EntityFrameworkCore;
 
 
 
-// Referenecs: MVC Pattern https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-10.0&tabs=visual-studio
-//            Authorization and Authentication https://www.w3tutorials.net/blog/asp-net-core-simplest-possible-forms-authentication/
 
 namespace InventoryAssetTracker.Api
 {
