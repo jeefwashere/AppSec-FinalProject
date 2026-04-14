@@ -43,9 +43,12 @@ namespace InventoryAssetTracker.Api
                 });
             }
 
+            string[] allowedExtensions = { ".jpg", ".jpeg", ".png", ".webp" };
             string[] allowedContentTypes = { "image/jpeg", "image/png", "image/webp" };
 
-            if (!allowedContentTypes.Contains(file.ContentType.ToLower()))
+            string fileExtension = Path.GetExtension(file.FileName).ToLower();
+
+            if (!allowedExtensions.Contains(fileExtension) || !allowedContentTypes.Contains(file.ContentType.ToLower()))
             {
                 return BadRequest(new
                 {
