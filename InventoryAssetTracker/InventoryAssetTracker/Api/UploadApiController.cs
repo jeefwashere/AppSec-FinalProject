@@ -43,14 +43,13 @@ namespace InventoryAssetTracker.Api
                 });
             }
 
-            string[] allowedExtensions = { ".jpg", ".jpeg", ".png", ".webp" };
-            string fileExtension = Path.GetExtension(file.FileName).ToLower();
+            string[] allowedContentTypes = { "image/jpeg", "image/png", "image/webp" };
 
-            if (!allowedExtensions.Contains(fileExtension))
+            if (!allowedContentTypes.Contains(file.ContentType.ToLower()))
             {
                 return BadRequest(new
                 {
-                    message = "Only JPG, JPEG, PNG, and WEBP Files are allowed."
+                    message = "Invalid file type."
                 });
             }
 
@@ -83,24 +82,36 @@ namespace InventoryAssetTracker.Api
             string uniqueFileName = $"user_{user.UserId}_{Guid.NewGuid()}{fileExtension}";
             string fullFilePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-            using (FileStream stream = new FileStream(fullFilePath, FileMode.Create))
+            try
             {
-                await file.CopyToAsync(stream);
-            }
-
-            if (!string.IsNullOrWhiteSpace(user.ProfilePhotoPath))
-            {
-                string oldFileName = Path.GetFileName(user.ProfilePhotoPath);
-                string oldFullPath = Path.Combine(uploadsFolder, oldFileName);
-
-                if (System.IO.File.Exists(oldFullPath))
+                using (FileStream stream = new FileStream(fullFilePath, FileMode.Create))
                 {
-                    System.IO.File.Delete(oldFullPath);
+                    await file.CopyToAsync(stream);
                 }
-            }
 
-            user.ProfilePhotoPath = $"/uploads/profilephotos/{uniqueFileName}";
-            await userContext.SaveChangesAsync();
+                if (!string.IsNullOrWhiteSpace(user.ProfilePhotoPath))
+                {
+                    string oldFileName = Path.GetFileName(user.ProfilePhotoPath);
+                    string oldFullPath = Path.Combine(uploadsFolder, oldFileName);
+
+                    if (System.IO.File.Exists(oldFullPath))
+                    {
+                        System.IO.File.Delete(oldFullPath);
+                    }
+                }
+
+
+                user.ProfilePhotoPath = $"/uploads/profilephotos/{uniqueFileName}";
+                await userContext.SaveChangesAsync();
+
+            }
+            catch
+            {
+                return StatusCode(500, new
+                {
+                    message = "An error occured while uploading the profile photo."
+                });
+            }
 
             return Ok(new
             {
