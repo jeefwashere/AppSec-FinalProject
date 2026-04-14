@@ -1,4 +1,9 @@
-﻿// References: https://medium.com/@mariorodrguezgalicia/what-is-a-dto-in-spring-boot-and-why-should-you-use-it-97651506e516 
+﻿/*
+ * FILE : UpdateAssetRequestDTO.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Stores asset update request data submitted by users.
+ */
+// References: https://medium.com/@mariorodrguezgalicia/what-is-a-dto-in-spring-boot-and-why-should-you-use-it-97651506e516 
 using System.ComponentModel.DataAnnotations;
 
 namespace InventoryAssetTracker.DTOs

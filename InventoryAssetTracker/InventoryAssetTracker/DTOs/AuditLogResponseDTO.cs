@@ -1,4 +1,9 @@
-﻿// References: https://medium.com/@mariorodrguezgalicia/what-is-a-dto-in-spring-boot-and-why-should-you-use-it-97651506e516 
+﻿/*
+ * FILE : AuditLogResponseDTO.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Stores audit log response data shown in admin views.
+ */
+// References: https://medium.com/@mariorodrguezgalicia/what-is-a-dto-in-spring-boot-and-why-should-you-use-it-97651506e516 
 namespace InventoryAssetTracker.DTOs
 {
     public class AuditLogResponseDTO

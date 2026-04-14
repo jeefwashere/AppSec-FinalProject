@@ -1,3 +1,8 @@
+/*
+ * FILE : HomeController.cs
+ * PROGRAMMER : Name(s): Josiah Williams, Jeff, Gao Ricardo
+ * DESCRIPTION : Handles home pages for index, privacy, and error views.
+ */
 using Microsoft.AspNetCore.Mvc;
 
 
